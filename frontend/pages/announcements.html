@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Announcements | CUET CPS</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">
+            <span class="logo-letter-bg">C</span>
+            <span class="logo-text">CUET</span>
+            <span class="logo-highlight">CP</span>
+            <span class="logo-text">Society</span>
+        </div>
+
+        <div class="nav-links">
+            <a href="../index.html">Home</a>
+            <a href="#">Resources</a>
+            <a href="#">Contests</a>
+            <a href="#">Editorials</a>
+            <a href="#">Discussions</a>
+            <a href="#">Leaderboard</a>
+
+            <a href="#" id="loginBtn">Login</a>
+            <a href="#" id="profileBtn" style="display:none;">Profile</a>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <h1>📢 Official Announcements</h1>
+        <p>Stay updated with the latest news and updates from CUET CPS</p>
+    </section>
+
+    <!-- Admin Create Section -->
+    <section class="create-announcement" id="adminSection" style="display:none;">
+        <h2>Create Announcement</h2>
+
+        <input type="text" id="title" placeholder="Announcement Title">
+        <textarea id="content" placeholder="Write announcement details here..."></textarea>
+        <button class="primary-btn" id="postBtn">Post Announcement</button>
+    </section>
+
+    <!-- Announcements List -->
+    <section class="announcement-list" id="announcementList">
+
+        <!-- Example Card -->
+        <div class="announcement-card">
+            <div class="announcement-header">
+                <h3>Intra CUET Contest 2026</h3>
+                <span class="date">Feb 25, 2026</span>
+            </div>
+            <p>
+                We are organizing our first intra CUET competitive programming contest.
+                Prepare well and stay tuned for further updates.
+            </p>
+        </div>
+
+    </section>
+
+    <script src="../assets/js/announcements.js"></script>
+</body>
+</html>

@@ -1,0 +1,260 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background: #0f0f1a;
+    color: white;
+}
+
+/* Navbar */
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 80px;
+    background: #111122;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: bold;
+    color: white; /* default text color for normal segments */
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.logo-letter-bg {
+    background-color: #a855f7;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 3px;
+}
+
+.logo-highlight {
+    color: #a855f7;
+}
+
+.logo-text {
+    color: white;
+}
+
+.nav-links a {
+    margin-left: 25px;
+    text-decoration: none;
+    color: white;
+    transition: 0.3s;
+}
+
+.nav-links a:hover {
+    color: #a855f7;
+}
+
+/* Hero Section */
+
+.hero {
+    text-align: center;
+    padding: 120px 20px;
+    background: linear-gradient(135deg, #1a1a2e, #0f0f1a);
+}
+
+.hero h1 {
+    font-size: 42px;
+    margin-bottom: 20px;
+}
+
+.hero p {
+    font-size: 18px;
+    color: #cfcfcf;
+    margin: 0 auto 40px;
+    max-width: 600px; /* constrain width so text wraps predictably */
+}
+
+/* shift the buttons slightly left, still centered overall */
+.hero .buttons {
+    display: inline-block;
+    margin-left: -20px;
+}
+.buttons button {
+    padding: 12px 25px;
+    margin: 0 10px;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.primary-btn {
+    background: transparent;
+    border: 2px solid #a855f7;
+    color: #a855f7;
+}
+
+.primary-btn:hover {
+    background: #a855f7;
+    color: white;
+}
+
+.secondary-btn {
+    background: transparent;
+    border: 2px solid #a855f7;
+    color: #a855f7;
+}
+
+.secondary-btn:hover {
+    background: #a855f7;
+    color: white;
+}
+
+/* Features */
+
+/* We use a grid layout for cards.  The earlier flex rule was overriding
+   and the 1fr columns stretched to the full width, causing a row with
+   only two cards to appear left-aligned.  Removing the flex version and
+   constraining the tracks prevents the cells from expanding so that
+   justify-content:center can actually center the group. */
+
+.features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, auto));
+    gap: 30px;
+    padding: 80px 60px;
+    justify-content: center; /* center the entire grid when it doesn't fill */
+    justify-items: center;   /* center each card inside its cell */
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all 1s ease;
+    max-width: 1200px; /* optional constraint for very wide screens */
+    margin: 0 auto;
+}
+
+.feature-card {
+    background: #1b1b2f;
+    padding: 30px;
+    border-radius: 12px;
+    width: 280px;
+    text-align: center;
+    transition: 0.3s;
+}
+
+.feature-card:hover {
+    transform: translateY(-10px);
+    background: #22223a;
+}
+
+.feature-card h3 {
+    margin-bottom: 15px;
+    color: #a855f7;
+}
+
+
+/* Sliding Animation - already included above via the main .features rule. */
+
+/* (No additional duplicate block needed) */
+
+.features.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.feature-card {
+    background: #1b1b2f;
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+    transition: 0.3s;
+}
+
+.feature-card:hover {
+    transform: translateY(-10px);
+    background: #22223a;
+}
+
+/* Page Header */
+
+.page-header {
+    text-align: center;
+    padding: 80px 20px 40px;
+    background: linear-gradient(135deg, #1a1a2e, #0f0f1a);
+}
+
+.page-header h1 {
+    font-size: 36px;
+    margin-bottom: 10px;
+}
+
+.page-header p {
+    color: #cfcfcf;
+}
+
+/* Create Announcement Section */
+
+.create-announcement {
+    width: 60%;
+    margin: 40px auto;
+    background: #1b1b2f;
+    padding: 30px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.create-announcement input,
+.create-announcement textarea {
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    background: #0f0f1a;
+    color: white;
+    outline: none;
+}
+
+.create-announcement textarea {
+    height: 120px;
+    resize: none;
+}
+
+/* Announcement List */
+
+.announcement-list {
+    width: 70%;
+    margin: 40px auto;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.announcement-card {
+    background: #1b1b2f;
+    padding: 25px;
+    border-radius: 12px;
+    transition: 0.3s;
+    border-left: 4px solid #a855f7;
+}
+
+.announcement-card:hover {
+    transform: translateY(-5px);
+    background: #22223a;
+}
+
+.announcement-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.announcement-header h3 {
+    color: #a855f7;
+}
+
+.date {
+    font-size: 14px;
+    color: #aaa;
+}
