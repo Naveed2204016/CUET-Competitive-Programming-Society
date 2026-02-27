@@ -206,6 +206,8 @@ body {
     gap: 15px;
 }
 
+
+
 .create-announcement input,
 .create-announcement textarea {
     padding: 12px;
@@ -219,6 +221,11 @@ body {
 .create-announcement textarea {
     height: 120px;
     resize: none;
+}
+
+.create-announcement button {
+    padding: 12px 20px;
+    font-size: 16px;
 }
 
 /* Announcement List */
@@ -257,4 +264,224 @@ body {
 .date {
     font-size: 14px;
     color: #aaa;
+}
+
+/* Resources page styles */
+
+.syllabus-section {
+    text-align: center;
+    margin: 40px auto;
+}
+
+.syllabus-section h2 {
+    color: #a855f7;
+    margin-bottom: 15px;
+}
+
+.syllabus-section a
+{
+    padding: 12px 12px;
+    padding-top: 1dvh;
+    font-size: medium;
+}
+
+.create-topic {
+    width: 60%;
+    margin: 40px auto;
+    background: #1b1b2f;
+    padding: 30px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.create-topic input {
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    background: #0f0f1a;
+    color: white;
+    outline: none;
+}
+
+.topics-list {
+    width: 80%;
+    margin: 40px auto;
+    /* grid allows multiple cards per row */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 30px;
+}
+
+.resource-topic {
+    background: #1b1b2f;
+    padding: 25px;
+    border-radius: 12px;
+    border-left: 4px solid #a855f7;
+}
+
+.resource-topic h3 {
+    color: #a855f7;
+    margin-bottom: 15px;
+}
+
+.resource-section {
+    margin-bottom: 20px;
+}
+
+.resource-section h4 {
+    margin-bottom: 8px;
+    color: #a855f7;
+}
+
+.resource-section ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.resource-section li {
+    margin-bottom: 6px;
+}
+
+.resource-section a {
+    color: #cfcfcf;
+    text-decoration: none;
+}
+
+.resource-section a:hover {
+    text-decoration: underline;
+}
+
+.admin-controls {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* make admin buttons more prominent */
+.admin-controls .secondary-btn {
+    padding: 10px 18px;
+    font-size: 14px;
+    border-radius: 6px;
+}
+
+/* enlarge add-topic controls */
+.create-topic input {
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    background: #0f0f1a;
+    color: white;
+    outline: none;
+}
+
+.create-topic button {
+    padding: 12px 20px;
+    font-size: 16px;
+}
+
+.empty {
+    color: #777;
+    font-style: italic;
+}
+
+
+
+/* Auth Pages - Optimized */
+
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 90vh; 
+    background: linear-gradient(135deg, #1a1a2e, #0f0f1a);
+    padding: 20px;
+}
+
+.auth-card {
+    background: #1b1b2f;
+    padding: 40px;
+    border-radius: 15px;
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 25px rgba(168, 85, 247, 0.3);
+    /*box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(168, 85, 247, 0.1);*/
+    border: 1px solid rgba(168, 85, 247, 0.2);
+}
+
+.auth-card h2 {
+    text-align: center;
+    color: #a855f7;
+    margin-bottom: 25px;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+/* This targets the form layout specifically */
+.auth-card form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; 
+}
+
+.auth-card input,
+.auth-card select {
+    padding: 14px;
+    border-radius: 8px;
+    border: 1px solid #2d2d44;
+    background: #0f0f1a;
+    color: white;
+    outline: none;
+    font-size: 15px;
+    transition: all 0.3s ease;
+}
+
+.auth-card input:focus, 
+.auth-card select:focus {
+    border-color: #a855f7;
+    box-shadow: 0 0 8px rgba(168, 85, 247, 0.3);
+}
+
+/* Specifically style the primary-btn ONLY when it is inside an auth-card */
+.auth-card .primary-btn {
+    background: #a855f7; /* Solid background for Login/Signup */
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+    transition: background-color 0.3s ease; /* Fixed red error by adding -color */
+}
+
+.auth-card .primary-btn:hover {
+    background: #9333ea;
+    color: white;
+}
+
+.full-btn {
+    width: 100%;
+}
+
+.auth-switch {
+    margin-top: 25px;
+    text-align: center;
+    font-size: 14px;
+    color: #cfcfcf;
+}
+
+.auth-switch a {
+    color: #a855f7;
+    text-decoration: none;
+    font-weight: 600;
+    margin-left: 5px;
+}
+
+.auth-switch a:hover {
+    text-decoration: underline;
 }

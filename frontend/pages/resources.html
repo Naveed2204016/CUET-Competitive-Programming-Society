@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Resources | CUET CPS</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">
+            <span class="logo-letter-bg">C</span>
+            <span class="logo-text">CUET</span>
+            <span class="logo-highlight">CP</span>
+            <span class="logo-text">Society</span>
+        </div>
+
+        <div class="nav-links">
+            <a href="../index.html">Home</a>
+            <a href="announcements.html">Announcements</a>
+            <a href="#">Contests</a>
+            <a href="#">Editorials</a>
+            <a href="#">Discussions</a>
+            <a href="#">Leaderboard</a>
+
+            <a href="#" id="loginBtn">Login</a>
+            <a href="#" id="profileBtn" style="display:none;">Profile</a>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <h1>📘 Learning Resources</h1>
+        <p>Browse topic-wise videos, blogs, practice contests and editorial links curated for CUET CPS members.</p>
+    </section>
+
+    <!-- Syllabus Section -->
+    <section class="syllabus-section">
+        <h2>📄 CUET CP Syllabus</h2>
+        <a href="https://drive.google.com/drive/folders/your-syllabus-link" target="_blank" class="primary-btn">Open Syllabus</a>
+    </section>
+
+    <!-- Admin Topic Creation -->
+    <section class="create-topic" id="adminTopicSection" style="display:none;">
+        <h2>Add New Topic</h2>
+        <input type="text" id="topicName" placeholder="Topic Name">
+        <button class="primary-btn" id="addTopicBtn">Add Topic</button>
+    </section>
+
+    <!-- Topics List -->
+    <section class="topics-list" id="topicsList">
+        <!-- Dynamically populated by JavaScript -->
+    </section>
+
+    <script src="../assets/js/resources.js"></script>
+</body>
+</html>

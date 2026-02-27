@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign Up | CUET CPS</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">
+            <span class="logo-letter-bg">C</span>
+            <span class="logo-text">CUET</span>
+            <span class="logo-highlight">CP</span>
+            <span class="logo-text">Society</span>
+        </div>
+        <div class="nav-links">
+            <a href="../index.html">Home</a>
+            <a href="login.html">Login</a>
+        </div>
+    </nav>
+
+    <section class="auth-container">
+        <div class="auth-card">
+            <h2>Create Account</h2>
+
+            <form id="signupForm">
+
+                <input type="text" id="username" placeholder="Username" required>
+                <input type="text" id="facultyId" placeholder="Faculty / Student ID" required>
+                <input type="email" id="email" placeholder="Email" required>
+                <input type="text" id="cfLink" placeholder="Codeforces Profile Link" required>
+                <input type="password" id="password" placeholder="Password" required>
+
+                <select id="role" required>
+                    <option value="">Select Role</option>
+                    <option value="member">Member</option>
+                    <option value="admin">Admin</option>
+                </select>
+
+                <button type="submit" class="primary-btn full-btn">
+                    Sign Up
+                </button>
+            </form>
+
+            <p class="auth-switch">
+                Already have an account?
+                <a href="login.html">Login</a>
+            </p>
+        </div>
+    </section>
+
+    <script src="../assets/js/auth.js"></script>
+</body>
+</html>
