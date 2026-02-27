@@ -19,13 +19,14 @@ if (role === "admin") {
     document.getElementById("adminTopicSection").style.display = "flex";
 }
 
-// data structure holding topics and links
+// data structure holding topics and links (each resource now has a title and a URL)
 let topics = [
     // sample topic to give user a starting view
     {
         name: "Game Theory",
-        classes: ["https://www.youtube.com/live/2GoUYpQlAUY?si=rnPvKetHp0pesSoj",
-            "https://www.youtube.com/live/EienAWnUPow?si=H0JgRZkW9gGpPXqt"
+        classes: [
+            { name: "Game Theory-1", url: "https://www.youtube.com/live/2GoUYpQlAUY?si=rnPvKetHp0pesSoj" },
+            { name: "Game Theory-2", url: "https://www.youtube.com/live/EienAWnUPow?si=H0JgRZkW9gGpPXqt" }
         ],
         blogs: [],
         contests: [],
@@ -34,7 +35,8 @@ let topics = [
 
     {
         name: "Graph",
-        classes: ["https://www.youtube.com/live/iKCnz0k4C5c?si=tqJSV_Fk8uvbfc6n"
+        classes: [
+            { name: "Graph-1", url: "https://www.youtube.com/live/iKCnz0k4C5c?si=tqJSV_Fk8uvbfc6n" }
         ],
         blogs: [],
         contests: [],
@@ -58,7 +60,8 @@ function renderTopics() {
             if (type === 'editorial') {
                 return '<ul>' + arr.map((ed, i) => `<li><a href="#" onclick="viewEditorial(${idx},${i})">${ed.substring(0,30)}${ed.length>30?"...":""}</a></li>`).join('') + '</ul>';
             }
-            return '<ul>' + arr.map(link => `<li><a href="${link}" target="_blank">${link}</a></li>`).join('') + '</ul>';
+            // other sections now contain objects with name/url
+            return '<ul>' + arr.map(item => `<li><a href="${item.url}" target="_blank">${item.name || item.url}</a></li>`).join('') + '</ul>';
         }
 
         card.innerHTML = `
@@ -99,15 +102,21 @@ function renderTopics() {
 
 // functions called by dynamic links
 function promptAdd(topicIndex, section) {
-    let value;
+    let name, url;
     if (section === 'editorials') {
-        value = prompt("Enter editorial text or link:");
-    } else {
-        value = prompt(`Enter ${section.slice(0,-1)} URL:`);
+        const text = prompt("Enter editorial text or link:");
+        if (!text) return;
+        topics[topicIndex].editorials.push(text);
+        renderTopics();
+        return;
     }
-    if (!value) return;
 
-    topics[topicIndex][section].push(value);
+    name = prompt(`Enter ${section.slice(0,-1)} title:`);
+    if (!name) return;
+    url = prompt(`Enter ${section.slice(0,-1)} URL:`);
+    if (!url) return;
+
+    topics[topicIndex][section].push({ name, url });
     renderTopics();
 }
 
