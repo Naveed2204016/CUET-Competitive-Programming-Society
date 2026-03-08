@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Leaderboard | CUET CPS</title>
+    <link rel="stylesheet" href="../assets/css/style.css" />
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar">
+      <div class="logo">
+        <span class="logo-letter-bg">C</span>
+        <span class="logo-text">CUET</span>
+        <span class="logo-highlight">CP</span>
+        <span class="logo-text">Society</span>
+      </div>
+
+      <div class="nav-links">
+        <a href="../index.html">Home</a>
+        <a href="announcements.html">Announcements</a>
+        <a href="resources.html">Resources</a>
+        <a href="#">Contests</a>
+        <a href="#">Editorials</a>
+        <a href="discussions.html">Discussions</a>
+        <a href="leaderboard.html">Leaderboard</a>
+
+        <a href="#" id="loginBtn">Login</a>
+        <a href="#" id="profileBtn" style="display: none">Profile</a>
+      </div>
+    </nav>
+
+    <!-- Page header -->
+    <section class="page-header">
+      <div class="container">
+        <h1>📊 Leaderboard</h1>
+        <p>
+          See which members solved the most problems last month and view their
+          Codeforces ratings.
+        </p>
+      </div>
+    </section>
+
+    <section class="leaderboard-section container">
+      <button class="primary-btn" id="refreshBtn">Refresh</button>
+      <table id="leaderboardTable">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Username (handle)</th>
+            <th>Solved (30d)</th>
+            <th>Rating</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- filled by script -->
+        </tbody>
+      </table>
+    </section>
+
+    <script src="../assets/js/leaderboard.js"></script>
+  </body>
+</html>
