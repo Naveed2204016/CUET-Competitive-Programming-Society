@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Discussions | CUET CPS</title>
+    <link rel="stylesheet" href="../assets/css/style.css" />
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar">
+      <div class="logo">
+        <span class="logo-letter-bg">C</span>
+        <span class="logo-text">CUET</span>
+        <span class="logo-highlight">CP</span>
+        <span class="logo-text">Society</span>
+      </div>
+
+      <div class="nav-links">
+        <a href="../index.html">Home</a>
+        <a href="announcements.html">Announcements</a>
+        <a href="resources.html">Resources</a>
+        <a href="#">Contests</a>
+        <a href="#">Editorials</a>
+        <a href="discussions.html">Discussions</a>
+        <a href="leaderboard.html">Leaderboard</a>
+
+        <a href="#" id="loginBtn">Login</a>
+        <a href="#" id="profileBtn" style="display: none">Profile</a>
+      </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+      <div class="container">
+        <h1>💬 Community Discussions</h1>
+        <p>
+          Any member or admin can create a post. Others may upvote and comment
+          on the posts.
+        </p>
+      </div>
+    </section>
+
+    <!-- New post area -->
+    <section class="new-post" id="newPostSection">
+      <textarea
+        id="postContent"
+        placeholder="Share something with the community..."
+      ></textarea>
+      <button class="primary-btn" id="postBtn">Post</button>
+    </section>
+
+    <!-- Existing posts -->
+    <section id="postsContainer" class="discussions-list container">
+      <!-- populated by JavaScript -->
+    </section>
+
+    <script src="../assets/js/discussions.js"></script>
+  </body>
+</html>
