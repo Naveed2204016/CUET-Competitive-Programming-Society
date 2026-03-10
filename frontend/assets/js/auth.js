@@ -1,44 +1,43 @@
-// LOGIN
 const loginForm = document.getElementById("loginForm");
 
 if (loginForm) {
-    loginForm.addEventListener("submit", function (e) {
+    loginForm.addEventListener("submit", async function (e) {
         e.preventDefault();
 
         const username = document.getElementById("loginUsername").value.trim();
         const password = document.getElementById("loginPassword").value;
-        const users = getStoredUsers();
-        const user = users.find(u => u.username === username && u.password === password);
-        if (!user) {
-            alert("Invalid credentials");
-            return;
+        try{
+            const response = await fetch("http://localhost:5000/api/auth/login", {
+                method: "POST",
+                headers: { "content-type":"application/json" },
+                body: JSON.stringify({ Username: username, Password: password })
+            });
+
+            const data = await response.json();
+            if(data.success)
+            {
+                localStorage.setItem("token", data.token);
+                localStorage.setItem("role", data.role);
+                alert("Login Successful");
+                window.location.href = "/frontend/index.html";
+            }
+            else{
+                alert(data.message || "Login failed. Please try again.");
+            }
+
+        }catch(err)
+        {
+            alert("Server error. Please try again later.");
         }
-
-        localStorage.setItem("token", "dummyToken123");
-        localStorage.setItem("role", user.role);
-        // preserve cfLink for convenience
-        localStorage.setItem("cfLink", user.cfLink);
-        localStorage.setItem("currentUser", JSON.stringify(user));
-
-        alert("Login Successful");
-        window.location.href = "../index.html";
     });
 }
 
 
-// SIGNUP
 const signupForm = document.getElementById("signupForm");
 
-function getStoredUsers() {
-    return JSON.parse(localStorage.getItem("users") || "[]");
-}
-
-function saveUsers(users) {
-    localStorage.setItem("users", JSON.stringify(users));
-}
 
 if (signupForm) {
-    signupForm.addEventListener("submit", function (e) {
+    signupForm.addEventListener("submit", async function (e) {
         e.preventDefault();
 
         const username = document.getElementById("username").value.trim();
@@ -48,29 +47,42 @@ if (signupForm) {
         const password = document.getElementById("password").value;
         const role = document.getElementById("role").value;
 
-        if (!username || !cfLink || !password || !role) {
+        if (!username || !cfLink || !password || !facultyId || !email) {
             alert("Please fill all required fields.");
             return;
         }
 
-        const users = getStoredUsers();
-        // simple duplicate check
-        if (users.some(u => u.username === username)) {
-            alert("Username already exists");
-            return;
+        try
+        {
+            const response = await fetch("http://localhost:5000/api/auth/signup", {
+                method: "POST",
+                headers: {
+                    "content-type":"application/json"
+                },
+                body: JSON.stringify({
+                    Username: username,
+                    ID: facultyId,
+                    Email: email,
+                    CfHandle: cfLink,
+                    Password: password,
+                    Role: role
+                })
+            });
+
+            const data = await response.json();
+            if(data.success)
+            {
+                alert("Signup Successful. Please Login.");
+                window.location.href = "/frontend/pages/login.html";
+            }
+            else
+            {
+                alert("Signup failed. Please try again.");
+            }
+
+        }catch(err)
+        {
+            alert("Server error. Please try again later.");
         }
-
-        users.push({
-            username,
-            facultyId,
-            email,
-            cfLink,
-            password,
-            role
-        });
-        saveUsers(users);
-
-        alert("Signup Successful. Please Login.");
-        window.location.href = "login.html";
     });
 }

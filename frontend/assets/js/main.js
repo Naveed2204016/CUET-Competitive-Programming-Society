@@ -35,6 +35,13 @@ signupbtn.addEventListener("click",()=>
     window.location.href="/frontend/pages/signup.html";
 });
 
+const wcpbtn=document.querySelector('.primary-btn');
+
+wcpbtn.addEventListener("click",()=>
+{
+    window.location.href="/frontend/pages/why-cp.html";
+});
+
 // Temporary, will remove later once log out functionality is implemented
 const pbtn=document.getElementById("profileBtn");
 pbtn.addEventListener("click",()=>

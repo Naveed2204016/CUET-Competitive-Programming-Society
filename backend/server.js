@@ -1,17 +1,32 @@
 const express = require("express");
 const dotenv = require("dotenv");
-const cors = require("cors");
-
 dotenv.config();
+const cors = require("cors");
+const mongoose = require("mongoose");
+const authRoutes = require("./routes/auth");
 
 const app = express();
 
+mongoose.connect('mongodb://localhost/cuet-cp-society')
+.then(() => console.log("Connection successful"))
+.catch((err) => console.error("Connection failed:", err));
+
 app.use(cors());
 app.use(express.json());
+app.use("/api/auth", authRoutes);
 
 app.get("/", (req, res) => {
     res.send("CUET CP Society Backend Running...");
 });
+
+const errorHandler =(err,req,res,next)=>{
+    if(res.headersSent){
+        return next(err);
+    }
+    res.status(500).json({error: err.message});
+}
+
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
