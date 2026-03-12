@@ -1,5 +1,8 @@
 // leaderboard.js
 const tokenLB = localStorage.getItem("token");
+const leaderboardBody = document.querySelector("#leaderboardTable tbody");
+const refreshBtn = document.getElementById("refreshBtn");
+
 if (!tokenLB) {
     alert("Please login to view leaderboard");
     window.location.href = "../index.html";
@@ -13,93 +16,185 @@ if (tokenLB) {
 
 function extractHandle(link) {
     if (!link) return null;
-    link = link.trim();
-    if (link.endsWith('/')) link = link.slice(0, -1);
-    const parts = link.split('/');
-    return parts[parts.length-1];
+    const value = link.trim();
+    if (!value) return null;
+
+    if (!value.includes("/")) {
+        return value.replace(/^@/, "");
+    }
+
+    const normalized = value.endsWith("/") ? value.slice(0, -1) : value;
+    const parts = normalized.split("/").filter(Boolean);
+    return parts.length ? parts[parts.length - 1].replace(/^@/, "") : null;
+}
+
+function setRefreshState(isLoading) {
+    if (!refreshBtn) return;
+    refreshBtn.disabled = isLoading;
+    refreshBtn.textContent = isLoading ? "Loading..." : "Refresh";
+}
+
+function renderMessage(message) {
+    if (!leaderboardBody) return;
+    leaderboardBody.innerHTML = `<tr><td colspan="4">${message}</td></tr>`;
+}
+
+async function fetchUsers() {
+    const response = await fetch("http://localhost:5000/api/leaderboard", {
+        headers: {
+            Authorization: `Bearer ${tokenLB}`
+        }
+    });
+
+    const data = await response.json();
+    if (response.status === 401) {
+        throw new Error("Unauthorized");
+    }
+
+    if (!response.ok || !data.success) {
+        throw new Error(data.message || data.error || "Failed to load leaderboard users");
+    }
+
+    return Array.isArray(data.data) ? data.data : [];
+}
+
+async function fetchRatings(handles) {
+    if (!handles.length) {
+        return {};
+    }
+
+    try {
+        const response = await fetch(`https://codeforces.com/api/user.info?handles=${handles.join(";")}`);
+        const data = await response.json();
+
+        if (data.status !== "OK") {
+            throw new Error(data.comment || "Failed to load ratings");
+        }
+
+        return data.result.reduce((accumulator, user) => {
+            accumulator[user.handle.toLowerCase()] = user.rating || 0;
+            return accumulator;
+        }, {});
+    } catch (error) {
+        console.error("Codeforces rating fetch error", error);
+        return {};
+    }
+}
+
+async function fetchSolvedCount(handle, oneMonthAgo) {
+    try {
+        const response = await fetch(`https://codeforces.com/api/user.status?handle=${encodeURIComponent(handle)}&from=1&count=1000`);
+        const data = await response.json();
+
+        if (data.status !== "OK") {
+            throw new Error(data.comment || "Failed to load submissions");
+        }
+
+        const solvedSet = new Set();
+        data.result.forEach((submission) => {
+            if (submission.verdict !== "OK" || submission.creationTimeSeconds < oneMonthAgo) {
+                return;
+            }
+
+            const contestId = submission.problem?.contestId ?? "gym";
+            const index = submission.problem?.index ?? "unknown";
+            solvedSet.add(`${contestId}:${index}`);
+        });
+
+        return solvedSet.size;
+    } catch (error) {
+        console.error(`Codeforces submissions fetch error for ${handle}`, error);
+        return 0;
+    }
 }
 
 async function buildLeaderboard() {
-    const users = JSON.parse(localStorage.getItem("users") || "[]");
-    if (users.length === 0) {
-        document.getElementById("leaderboardTable").insertAdjacentHTML('afterend', '<p>No users registered yet.</p>');
+    renderMessage("Loading leaderboard...");
+
+    const users = await fetchUsers();
+    if (!users.length) {
+        renderMessage("No users registered yet.");
         return;
     }
 
     const now = Math.floor(Date.now() / 1000);
     const oneMonthAgo = now - 30 * 24 * 60 * 60;
-    const results = [];
-
-    // fetch ratings in batch
     const handles = users
-        .map(u => extractHandle(u.cfLink))
-        .filter(h => h);
-    let ratingMap = {};
-    if (handles.length) {
-        try {
-            const resp = await fetch(`https://codeforces.com/api/user.info?handles=${handles.join(';')}`);
-            const data = await resp.json();
-            if (data.status === 'OK') {
-                data.result.forEach(u => {
-                    ratingMap[u.handle.toLowerCase()] = u.rating || 0;
-                });
-            }
-        } catch (e) {
-            console.error('rating fetch error', e);
-        }
+        .map((user) => ({
+            username: user.Username,
+            handle: extractHandle(user.CfHandle)
+        }))
+        .filter((user) => user.handle);
+
+    if (!handles.length) {
+        renderMessage("No valid Codeforces handles found.");
+        return;
     }
 
-    for (const u of users) {
-        const handle = extractHandle(u.cfLink);
-        if (!handle) continue;
-        let solved = 0;
-        try {
-            const resp = await fetch(`https://codeforces.com/api/user.status?handle=${handle}&from=1&count=1000`);
-            const data = await resp.json();
-            if (data.status === 'OK') {
-                const set = new Set();
-                data.result.forEach(sub => {
-                    if (sub.verdict === 'OK' && sub.creationTimeSeconds >= oneMonthAgo) {
-                        set.add(`${sub.problem.contestId}:${sub.problem.index}`);
-                    }
-                });
-                solved = set.size;
+    const uniqueHandles = [...new Set(handles.map((user) => user.handle))];
+    const ratingMap = await fetchRatings(uniqueHandles);
+    const solvedCounts = await Promise.all(
+        uniqueHandles.map(async (handle) => [handle, await fetchSolvedCount(handle, oneMonthAgo)])
+    );
+    const solvedMap = Object.fromEntries(solvedCounts);
+
+    const results = handles.map((user) => ({
+            username: user.username,
+            handle: user.handle,
+            solved: solvedMap[user.handle] || 0,
+            rating: ratingMap[user.handle.toLowerCase()] || 0
+        }))
+        .sort((a, b) => {
+            if (b.solved !== a.solved) {
+                return b.solved - a.solved;
             }
-        } catch (e) {
-            console.error('status fetch error', e);
-        }
-        results.push({
-            username: u.username,
-            handle,
-            rating: ratingMap[handle.toLowerCase()] || 0,
-            solved
+
+            return b.rating - a.rating;
         });
-    }
-
-    results.sort((a, b) => {
-        if (b.solved !== a.solved) return b.solved - a.solved;
-        return b.rating - a.rating;
-    });
 
     render(results);
 }
 
 function render(list) {
-    const tbody = document.querySelector('#leaderboardTable tbody');
-    tbody.innerHTML = '';
-    list.forEach((u, idx) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${idx + 1}</td><td>${u.username} (${u.handle})</td><td>${u.solved}</td><td>${u.rating}</td>`;
-        tbody.appendChild(tr);
+    if (!leaderboardBody) return;
+
+    if (!list.length) {
+        renderMessage("No leaderboard data available.");
+        return;
+    }
+
+    leaderboardBody.innerHTML = "";
+    list.forEach((user, index) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${user.username} (${user.handle})</td>
+            <td>${user.solved}</td>
+            <td>${user.rating}</td>
+        `;
+        leaderboardBody.appendChild(row);
     });
 }
 
-const refreshBtn = document.getElementById('refreshBtn');
-refreshBtn?.addEventListener('click', () => {
-    refreshBtn.textContent = 'Loading...';
-    buildLeaderboard().finally(() => {
-        refreshBtn.textContent = 'Refresh';
-    });
-});
+async function initializeLeaderboard() {
+    setRefreshState(true);
+    try {
+        await buildLeaderboard();
+    } catch (error) {
+        console.error("Leaderboard build error", error);
+        if (String(error.message).toLowerCase().includes("unauthorized") || String(error.message).toLowerCase().includes("token")) {
+            alert("Session expired. Please login again.");
+            localStorage.removeItem("token");
+            window.location.href = "../pages/login.html";
+            return;
+        }
 
-buildLeaderboard();
+        renderMessage(error.message || "Failed to load leaderboard.");
+    } finally {
+        setRefreshState(false);
+    }
+}
+
+refreshBtn?.addEventListener("click", initializeLeaderboard);
+
+initializeLeaderboard();
