@@ -18,6 +18,8 @@ if (loginForm) {
             {
                 localStorage.setItem("token", data.token);
                 localStorage.setItem("role", data.role);
+                localStorage.setItem("username", data.Username);
+                localStorage.setItem("id", data.ID);
                 alert("Login Successful");
                 window.location.href = "/frontend/index.html";
             }

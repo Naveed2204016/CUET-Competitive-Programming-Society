@@ -36,9 +36,8 @@ router.post("/login", async (req,res) => {
         const passwordMatch = await bcrypt.compare(req.body.Password, existingUser.Password);
         if(passwordMatch)
         {
-            console.log(process.env.JWT_SECRET);
-            const token = jwt.sign({ Username: existingUser.Username, Role: existingUser.Role , ID : existingUser.ID }, process.env.JWT_SECRET, { expiresIn: '3h' });
-            res.json({ success: true, token, role: existingUser.Role });
+            const token = jwt.sign({ Username: existingUser.Username, Role: existingUser.Role , ID : existingUser.ID , id: existingUser._id }, process.env.JWT_SECRET, { expiresIn: '3h' });
+            res.json({ success: true, token, role: existingUser.Role , Username: existingUser.Username, ID: existingUser.ID});
 
         }
         else

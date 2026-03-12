@@ -4,6 +4,7 @@ dotenv.config();
 const cors = require("cors");
 const mongoose = require("mongoose");
 const authRoutes = require("./routes/auth");
+const announcementRoutes = require("./routes/announcment");
 
 const app = express();
 
@@ -14,7 +15,7 @@ mongoose.connect('mongodb://localhost/cuet-cp-society')
 app.use(cors());
 app.use(express.json());
 app.use("/api/auth", authRoutes);
-
+app.use("/api/announcements", announcementRoutes);
 app.get("/", (req, res) => {
     res.send("CUET CP Society Backend Running...");
 });

@@ -1,5 +1,5 @@
-// Slide animation on first load
 window.addEventListener("load", () => {
+    console.log("Page loaded. Rendering topics...");
     const features = document.querySelector(".features");
 
     setTimeout(() => {
@@ -26,6 +26,17 @@ if (token) {
         }
     });
 }
+
+
+document.querySelector('.feature-card.announcements').addEventListener('click', () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+        alert("Please login to view announcements.");
+        window.location.href = "./index.html";
+    } else {
+        window.location.href = "./pages/announcements.html";
+    }
+});
 
 const signupbtn=document.querySelector('.secondary-btn');
 
