@@ -6,29 +6,27 @@ if (loginForm) {
 
         const username = document.getElementById("loginUsername").value.trim();
         const password = document.getElementById("loginPassword").value;
-        try{
+        try {
             const response = await fetch("http://localhost:5000/api/auth/login", {
                 method: "POST",
-                headers: { "content-type":"application/json" },
+                headers: { "content-type": "application/json" },
                 body: JSON.stringify({ Username: username, Password: password })
             });
 
             const data = await response.json();
-            if(data.success)
-            {
+            if (data.success) {
                 localStorage.setItem("token", data.token);
                 localStorage.setItem("role", data.role);
                 localStorage.setItem("username", data.Username);
                 localStorage.setItem("id", data.ID);
                 alert("Login Successful");
-                window.location.href = "/frontend/index.html";
+                window.location.href = "../index.html";
             }
-            else{
+            else {
                 alert(data.message || "Login failed. Please try again.");
             }
 
-        }catch(err)
-        {
+        } catch (err) {
             alert("Server error. Please try again later.");
         }
     });
@@ -54,12 +52,11 @@ if (signupForm) {
             return;
         }
 
-        try
-        {
+        try {
             const response = await fetch("http://localhost:5000/api/auth/signup", {
                 method: "POST",
                 headers: {
-                    "content-type":"application/json"
+                    "content-type": "application/json"
                 },
                 body: JSON.stringify({
                     Username: username,
@@ -72,18 +69,15 @@ if (signupForm) {
             });
 
             const data = await response.json();
-            if(data.success)
-            {
+            if (data.success) {
                 alert("Signup Successful. Please Login.");
-                window.location.href = "/frontend/pages/login.html";
+                window.location.href = "./login.html";
             }
-            else
-            {
+            else {
                 alert("Signup failed. Please try again.");
             }
 
-        }catch(err)
-        {
+        } catch (err) {
             alert("Server error. Please try again later.");
         }
     });

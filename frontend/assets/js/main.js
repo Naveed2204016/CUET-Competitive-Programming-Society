@@ -38,25 +38,22 @@ document.querySelector('.feature-card.announcements').addEventListener('click', 
     }
 });
 
-const signupbtn=document.querySelector('.secondary-btn');
+const signupbtn = document.querySelector('.secondary-btn');
 
-signupbtn.addEventListener("click",()=>
-{
+signupbtn.addEventListener("click", () => {
     console.log("hello world");
-    window.location.href="/frontend/pages/signup.html";
+    window.location.href = "./pages/signup.html";
 });
 
-const wcpbtn=document.querySelector('.primary-btn');
+const wcpbtn = document.querySelector('.primary-btn');
 
-wcpbtn.addEventListener("click",()=>
-{
-    window.location.href="/frontend/pages/why-cp.html";
+wcpbtn.addEventListener("click", () => {
+    window.location.href = "./pages/why-cp.html";
 });
 
 // Temporary, will remove later once log out functionality is implemented
-const pbtn=document.getElementById("profileBtn");
-pbtn.addEventListener("click",()=>
-{
+const pbtn = document.getElementById("profileBtn");
+pbtn.addEventListener("click", () => {
     localStorage.removeItem("token");
     localStorage.removeItem('role');
     document.getElementById("loginBtn").style.display = "inline-block";

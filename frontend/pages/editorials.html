@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Editorials | CUET CPS</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+</head>
+
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo">
+      <span class="logo-letter-bg">C</span>
+      <span class="logo-text">CUET</span>
+      <span class="logo-highlight">CP</span>
+      <span class="logo-text">Society</span>
+    </div>
+
+    <div class="nav-links">
+      <a href="../index.html">Home</a>
+      <a href="announcements.html">Announcements</a>
+      <a href="resources.html">Resources</a>
+      <a href="discussions.html">Discussions</a>
+      <a href="leaderboard.html">Leaderboard</a>
+
+      <a href="#" id="profileBtn">Profile</a>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <section class="page-header">
+    <h1>📝 Editorials</h1>
+    <p>
+      Access detailed text editorials to deeply understand contest problems and their solutions.
+    </p>
+  </section>
+
+  <!-- Admin Section - Create Editorial -->
+  <section class="admin-section" id="adminSection" style="display: none;">
+    <h2>📝 Create New Editorial</h2>
+    <form id="editorialForm">
+      <input type="text" id="problemTitle" placeholder="Problem Title (e.g., Two Sum, Graph Coloring)" required>
+      <input type="text" id="contestName" placeholder="Contest Name (e.g., Codeforces Round 900, LeetCode)" required>
+      <input type="url" id="problemLink" placeholder="Problem Link (https://...)" required>
+      <textarea id="editorialContent" placeholder="Editorial Content (approach, solution, time complexity, etc.)"
+        rows="8" required></textarea>
+      <select id="difficulty" required>
+        <option value="">Select Difficulty Level</option>
+        <option value="Easy">Easy</option>
+        <option value="Medium">Medium</option>
+        <option value="Hard">Hard</option>
+      </select>
+      <button type="submit" class="primary-btn">✨ Publish Editorial</button>
+    </form>
+  </section>
+
+  <!-- Editorials List -->
+  <section class="editorials-section">
+    <h2>All Editorials</h2>
+    <div id="editorialsList" class="editorials-container">
+      <p>Loading editorials...</p>
+    </div>
+  </section>
+
+  <script src="../assets/js/editorials.js"></script>
+</body>
+
+</html>

@@ -23,7 +23,8 @@ body {
 .logo {
   font-size: 22px;
   font-weight: bold;
-  color: white; /* default text color for normal segments */
+  color: white;
+  /* default text color for normal segments */
   display: flex;
   align-items: center;
   gap: 4px;
@@ -72,7 +73,8 @@ body {
   font-size: 18px;
   color: #cfcfcf;
   margin: 0 auto 40px;
-  max-width: 600px; /* constrain width so text wraps predictably */
+  max-width: 600px;
+  /* constrain width so text wraps predictably */
 }
 
 /* shift the buttons slightly left, still centered overall */
@@ -80,6 +82,7 @@ body {
   display: inline-block;
   margin-left: -20px;
 }
+
 .buttons button {
   padding: 12px 25px;
   margin: 0 10px;
@@ -125,12 +128,15 @@ body {
   grid-template-columns: repeat(auto-fit, minmax(280px, auto));
   gap: 30px;
   padding: 80px 60px;
-  justify-content: center; /* center the entire grid when it doesn't fill */
-  justify-items: center; /* center each card inside its cell */
+  justify-content: center;
+  /* center the entire grid when it doesn't fill */
+  justify-items: center;
+  /* center each card inside its cell */
   opacity: 0;
   transform: translateY(50px);
   transition: all 1s ease;
-  max-width: 1200px; /* optional constraint for very wide screens */
+  max-width: 1200px;
+  /* optional constraint for very wide screens */
   margin: 0 auto;
 }
 
@@ -493,6 +499,7 @@ body {
   border-radius: 10px;
   align-items: flex-end;
 }
+
 .new-post textarea {
   flex: 1;
   min-height: 80px;
@@ -500,6 +507,7 @@ body {
   background: #1b1b2f;
   border: 1px solid #333;
 }
+
 .new-post .primary-btn {
   align-self: flex-end;
 }
@@ -535,6 +543,7 @@ body {
   align-self: flex-end;
   margin-bottom: 15px;
 }
+
 .leaderboard-section table {
   width: 100%;
   border-collapse: collapse;
@@ -543,37 +552,44 @@ body {
 }
 
 /* message shown when no users are available */
-.leaderboard-section > p {
+.leaderboard-section>p {
   margin-top: 20px;
   color: #ccc;
   text-align: center;
   font-size: 16px;
 }
+
 .leaderboard-section th {
   background: #22223a;
   padding-top: 16px;
   padding-bottom: 16px;
 }
+
 .leaderboard-section tr {
   transition: background 0.3s;
 }
+
 .leaderboard-section tr:nth-child(even) {
   background: #1e1e2e;
 }
+
 .discussion-post .post-author {
   font-weight: bold;
   color: #a855f7;
   margin-bottom: 8px;
 }
+
 .discussion-post .post-content {
   margin-bottom: 10px;
 }
+
 .discussion-post .post-controls {
   display: flex;
   align-items: center;
   gap: 10px;
   margin-bottom: 10px;
 }
+
 .discussion-post textarea {
   width: 100%;
   height: 60px;
@@ -590,16 +606,19 @@ body {
   width: 90%;
   margin: 30px auto;
 }
+
 .leaderboard-section table {
   width: 100%;
   border-collapse: collapse;
 }
+
 .leaderboard-section th,
 .leaderboard-section td {
   padding: 12px 15px;
   text-align: left;
   border-bottom: 1px solid #333;
 }
+
 .leaderboard-section tr:hover {
   background: #22223a;
 }
@@ -617,6 +636,7 @@ button:disabled,
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -682,7 +702,8 @@ button:disabled,
 
 /* Specifically style the primary-btn ONLY when it is inside an auth-card */
 .auth-card .primary-btn {
-  background: #a855f7; /* Solid background for Login/Signup */
+  background: #a855f7;
+  /* Solid background for Login/Signup */
   color: white;
   border: none;
   padding: 14px;
@@ -691,7 +712,8 @@ button:disabled,
   cursor: pointer;
   font-size: 16px;
   margin-top: 10px;
-  transition: background-color 0.3s ease; /* Fixed red error by adding -color */
+  transition: background-color 0.3s ease;
+  /* Fixed red error by adding -color */
 }
 
 .auth-card .primary-btn:hover {
@@ -796,6 +818,464 @@ button:disabled,
 .resource-card-header h3 {
   margin-bottom: 0;
   color: #a855f7;
+}
+
+/* ============================
+   Editorials Page Styling
+   ============================ */
+
+.admin-section {
+  width: 70%;
+  margin: 50px auto;
+  background: linear-gradient(135deg, #1b1b2f, #191927);
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 8px 32px rgba(168, 85, 247, 0.15);
+  border: 1px solid rgba(168, 85, 247, 0.2);
+}
+
+.admin-section h2 {
+  color: #a855f7;
+  margin-bottom: 30px;
+  font-size: 28px;
+  text-align: center;
+}
+
+.admin-section form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.admin-section input,
+.admin-section textarea,
+.admin-section select {
+  padding: 14px 16px;
+  border-radius: 10px;
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  background: #0f0f1a;
+  color: white;
+  font-size: 15px;
+  outline: none;
+  transition: all 0.3s ease;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.admin-section select:focus {
+  border-color: #a855f7;
+  box-shadow: 0 0 12px rgba(168, 85, 247, 0.4);
+  background: #151520;
+}
+
+.admin-section select option {
+  background: #0f0f1a;
+  color: white;
+}
+
+.admin-section textarea {
+  resize: vertical;
+  min-height: 140px;
+}
+
+.admin-section button {
+  padding: 14px 28px;
+  font-size: 16px;
+  font-weight: 600;
+  margin-top: 10px;
+}
+
+.editorials-section {
+  padding: 60px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.editorials-section h2 {
+  text-align: center;
+  color: #a855f7;
+  font-size: 32px;
+  margin-bottom: 50px;
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.editorials-section h2::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, #a855f7, #7c3aed);
+  margin: 15px auto 0;
+  border-radius: 2px;
+}
+
+.editorials-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 30px;
+  animation: fadeIn 0.6s ease;
+}
+
+.editorial-card {
+  background: linear-gradient(135deg, #1b1b2f 0%, #191927 100%);
+  border-radius: 12px;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid rgba(168, 85, 247, 0.2);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  cursor: pointer;
+}
+
+.editorial-card:hover {
+  transform: translateY(-8px);
+  border-color: #a855f7;
+  box-shadow: 0 12px 40px rgba(168, 85, 247, 0.25);
+}
+
+.editorial-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 15px;
+  padding: 25px 25px 15px;
+  border-bottom: 1px solid rgba(168, 85, 247, 0.15);
+}
+
+.editorial-header h3 {
+  color: #e0e0ff;
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+  flex: 1;
+  line-height: 1.4;
+}
+
+.difficulty {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.difficulty.easy {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #white;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.difficulty.medium {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: white;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+.difficulty.hard {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.contest {
+  color: #a855f7;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 0 25px;
+  margin: 8px 0 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.author {
+  color: #9ca3af;
+  font-size: 13px;
+  padding: 0 25px;
+  margin: 6px 0 15px;
+  font-style: italic;
+}
+
+.editorial-content {
+  color: #cfcfcf;
+  font-size: 14px;
+  line-height: 1.6;
+  padding: 15px 25px;
+  flex: 1;
+  background: rgba(0, 0, 0, 0.1);
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+.editorial-content::-webkit-scrollbar {
+  width: 5px;
+}
+
+.editorial-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.editorial-content::-webkit-scrollbar-thumb {
+  background: #a855f7;
+  border-radius: 3px;
+}
+
+.problem-link {
+  display: inline-block;
+  margin: 15px 25px 0;
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #a855f7, #7c3aed);
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.problem-link:hover {
+  background: linear-gradient(135deg, #9333ea, #6d28d9);
+  transform: translateX(3px);
+  box-shadow: 0 4px 12px rgba(168, 85, 247, 0.4);
+}
+
+.admin-actions {
+  display: flex;
+  gap: 10px;
+  padding: 15px 25px 25px;
+  margin-top: auto;
+  border-top: 1px solid rgba(168, 85, 247, 0.15);
+}
+
+.edit-btn,
+.delete-btn {
+  flex: 1;
+  padding: 10px 15px;
+  border-radius: 8px;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.edit-btn {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: white;
+}
+
+.edit-btn:hover {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+  transform: translateY(-2px);
+}
+
+.delete-btn {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+}
+
+.delete-btn:hover {
+  background: linear-gradient(135deg, #dc2626, #991b1b);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+  transform: translateY(-2px);
+}
+
+/* ============================
+   Edit Modal Styling
+   ============================ */
+
+.edit-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+.edit-modal-content {
+  background: linear-gradient(135deg, #1b1b2f, #191927);
+  border-radius: 15px;
+  padding: 0;
+  width: 90%;
+  max-width: 600px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(168, 85, 247, 0.3);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.edit-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30px;
+  border-bottom: 1px solid rgba(168, 85, 247, 0.2);
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.edit-modal-header h2 {
+  color: #a855f7;
+  font-size: 24px;
+  margin: 0;
+}
+
+.close-modal-btn {
+  background: transparent;
+  border: none;
+  color: #9ca3af;
+  font-size: 28px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+}
+
+.close-modal-btn:hover {
+  color: #a855f7;
+  background: rgba(168, 85, 247, 0.1);
+}
+
+#editForm {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 30px;
+}
+
+#editForm input,
+#editForm textarea,
+#editForm select {
+  padding: 14px 16px;
+  border-radius: 10px;
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  background: #0f0f1a;
+  color: white;
+  font-size: 15px;
+  outline: none;
+  transition: all 0.3s ease;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+#editForm input:focus,
+#editForm textarea:focus,
+#editForm select:focus {
+  border-color: #a855f7;
+  box-shadow: 0 0 12px rgba(168, 85, 247, 0.4);
+  background: #151520;
+}
+
+#editForm textarea {
+  resize: vertical;
+  min-height: 140px;
+}
+
+#editForm select option {
+  background: #0f0f1a;
+  color: white;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.modal-actions button {
+  flex: 1;
+  padding: 12px 20px;
+  border-radius: 8px;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.modal-actions .primary-btn {
+  background: linear-gradient(135deg, #a855f7, #7c3aed);
+  color: white;
+}
+
+.modal-actions .primary-btn:hover {
+  background: linear-gradient(135deg, #9333ea, #6d28d9);
+  box-shadow: 0 4px 12px rgba(168, 85, 247, 0.4);
+  transform: translateY(-2px);
+}
+
+.modal-actions .secondary-btn {
+  background: transparent;
+  border: 2px solid #9ca3af;
+  color: #e0e0e0;
+}
+
+.modal-actions .secondary-btn:hover {
+  border-color: #a855f7;
+  color: #a855f7;
+  background: rgba(168, 85, 247, 0.1);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .editorials-container {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-section {
+    width: 90%;
+  }
+
+  .editorial-card {
+    margin: 0 auto;
+    max-width: 100%;
+  }
 }
 
 /* ── Resource 3-dot menu ──────────────────────────────────────────────────── */
@@ -936,8 +1416,7 @@ button:disabled,
   border-radius: 6px;
 }
 
-#addItemForm 
-{
+#addItemForm {
   display: flex;
   flex-direction: column;
   gap: 15px;
