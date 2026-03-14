@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Contests | CUET CPS</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo">
+      <span class="logo-letter-bg">C</span>
+      <span class="logo-text">CUET</span>
+      <span class="logo-highlight">CP</span>
+      <span class="logo-text">Society</span>
+    </div>
+
+    <div class="nav-links">
+      <a href="../index.html">Home</a>
+      <a href="announcements.html">Announcements</a>
+      <a href="resources.html">Resources</a>
+      <a href="editorials.html">Editorials</a>
+      <a href="discussions.html">Discussions</a>
+      <a href="leaderboard.html">Leaderboard</a>
+
+      <a href="#" id="profileBtn">Profile</a>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <section class="page-header">
+    <h1>🏆 Contests</h1>
+    <p>Participate in intra-CUET and external contests</p>
+  </section>
+
+  <!-- Admin Create Section -->
+  <section class="create-contest" id="adminSection" style="display:none;">
+    <h2>Create New Contest</h2>
+    <div class="form-group">
+      <input type="text" id="title" placeholder="Contest Title" required>
+      <textarea id="description" placeholder="Contest Description" required></textarea>
+    </div>
+    <div class="form-group">
+      <input type="datetime-local" id="startTime" placeholder="Start Time" required>
+      <input type="datetime-local" id="endTime" placeholder="End Time" required>
+    </div>
+    <div class="form-group">
+      <input type="text" id="platform" placeholder="Platform (e.g., Codeforces, VJudge)" required>
+      <input type="url" id="link" placeholder="Contest Link" required>
+    </div>
+    <div class="form-group">
+      <select id="level" required>
+        <option value="">Select Level</option>
+        <option value="Beginner">Beginner</option>
+        <option value="Intermediate">Intermediate</option>
+        <option value="Advanced">Advanced</option>
+      </select>
+      <select id="type" required>
+        <option value="">Select Type</option>
+        <option value="Intra-CUET">Intra-CUET</option>
+        <option value="External">External</option>
+        <option value="Team Formation">Team Formation</option>
+      </select>
+    </div>
+    <button class="primary-btn" id="createBtn">Create Contest</button>
+  </section>
+
+  <!-- Filter Section -->
+  <section class="filter-section">
+    <button class="filter-btn active" data-filter="all">All Contests</button>
+    <button class="filter-btn" data-filter="Upcoming">Upcoming</button>
+    <button class="filter-btn" data-filter="Ongoing">Ongoing</button>
+    <button class="filter-btn" data-filter="Completed">Completed</button>
+  </section>
+
+  <!-- Contests List -->
+  <section class="contests-container" id="contestsList">
+    <!-- Contest cards will be loaded here -->
+  </section>
+
+  <script src="../assets/js/contests.js"></script>
+</body>
+
+</html>

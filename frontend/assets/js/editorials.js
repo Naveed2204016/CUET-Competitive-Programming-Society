@@ -20,7 +20,7 @@ profileBtn.addEventListener("click", () => {
 // Fetch and display all editorials
 async function loadEditorials() {
   try {
-    const response = await fetch("http://localhost:5000/api/editorials", {
+    const response = await fetch("http://localhost:5001/api/editorials", {
       headers: { "content-type": "application/json" }
     });
     const data = await response.json();
@@ -115,7 +115,7 @@ if (editorialForm) {
 
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:5000/api/editorials", {
+      const response = await fetch("http://localhost:5001/api/editorials", {
         method: "POST",
         headers: {
           "content-type": "application/json",
@@ -153,7 +153,7 @@ async function deleteEditorial(editorialId) {
 
   try {
     const token = localStorage.getItem("token");
-    const response = await fetch(`http://localhost:5000/api/editorials/${editorialId}`, {
+    const response = await fetch(`http://localhost:5001/api/editorials/${editorialId}`, {
       method: "DELETE",
       headers: {
         "content-type": "application/json",
@@ -177,7 +177,7 @@ async function deleteEditorial(editorialId) {
 async function editEditorial(editorialId) {
   try {
     // Fetch the editorial data
-    const response = await fetch(`http://localhost:5000/api/editorials/${editorialId}`, {
+    const response = await fetch(`http://localhost:5001/api/editorials/${editorialId}`, {
       headers: { "content-type": "application/json" }
     });
     const data = await response.json();
@@ -230,7 +230,7 @@ async function editEditorial(editorialId) {
 
       try {
         const token = localStorage.getItem("token");
-        const updateResponse = await fetch(`http://localhost:5000/api/editorials/${editorialId}`, {
+        const updateResponse = await fetch(`http://localhost:5001/api/editorials/${editorialId}`, {
           method: "PUT",
           headers: {
             "content-type": "application/json",

@@ -1,4 +1,4 @@
-const BASE = "http://localhost:5000/api/resources";
+const BASE = "http://localhost:5001/api/resources";
 
 window.addEventListener("DOMContentLoaded", async () => {
     const token = localStorage.getItem("token");
@@ -172,9 +172,9 @@ function buildCard(resource, isAdmin) {
         const controls = document.createElement("div");
         controls.classList.add("admin-controls");
         [
-            { label: "Add Class",     field: "classes"    },
-            { label: "Add Blog",      field: "blogs"      },
-            { label: "Add Contest",   field: "contests"   },
+            { label: "Add Class", field: "classes" },
+            { label: "Add Blog", field: "blogs" },
+            { label: "Add Contest", field: "contests" },
             { label: "Add Editorial", field: "editorials" }
         ].forEach(({ label, field }) => {
             const btn = document.createElement("button");
@@ -215,12 +215,12 @@ function openAddModal(resourceId, field, card) {
     document.getElementById("modalTitle").textContent =
         isEditorial ? "Add Editorial" : `Add ${fieldLabels[field]}`;
 
-    document.getElementById("itemNameGroup").style.display  = isEditorial ? "none" : "flex";
-    document.getElementById("itemUrlGroup").style.display   = isEditorial ? "none" : "flex";
+    document.getElementById("itemNameGroup").style.display = isEditorial ? "none" : "flex";
+    document.getElementById("itemUrlGroup").style.display = isEditorial ? "none" : "flex";
     document.getElementById("editorialGroup").style.display = isEditorial ? "flex" : "none";
 
-    document.getElementById("itemName").value      = "";
-    document.getElementById("itemUrl").value       = "";
+    document.getElementById("itemName").value = "";
+    document.getElementById("itemUrl").value = "";
     document.getElementById("editorialText").value = "";
 
     modal.classList.add("open");
@@ -242,7 +242,7 @@ function openAddModal(resourceId, field, card) {
             if (!item) return;
         } else {
             const name = document.getElementById("itemName").value.trim();
-            const url  = document.getElementById("itemUrl").value.trim();
+            const url = document.getElementById("itemUrl").value.trim();
             if (!name || !url) { alert("Please fill in both Name and URL."); return; }
             item = { name, url };
         }

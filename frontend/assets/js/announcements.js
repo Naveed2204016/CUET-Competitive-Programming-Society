@@ -4,7 +4,7 @@ window.addEventListener("load", async () => {
     try {
         const token = localStorage.getItem("token");
 
-        const response1 = await fetch("http://localhost:5000/api/announcements/post", {
+        const response1 = await fetch("http://localhost:5001/api/announcements/post", {
             method: "GET",
             headers: { "Authorization": `Bearer ${token}` }
         });
@@ -16,7 +16,7 @@ window.addEventListener("load", async () => {
             document.getElementById("adminSection").style.display = "none";
         }
 
-        const response = await fetch("http://localhost:5000/api/announcements/", {
+        const response = await fetch("http://localhost:5001/api/announcements/", {
             method: "GET",
             headers: { "Authorization": `Bearer ${token}` }
         });
@@ -89,7 +89,7 @@ function attachMenuListeners(card) {
 
         const token = localStorage.getItem("token");
         try {
-            const response = await fetch(`http://localhost:5000/api/announcements/${encodeURIComponent(originalTitle)}`, {
+            const response = await fetch(`http://localhost:5001/api/announcements/${encodeURIComponent(originalTitle)}`, {
                 method: "DELETE",
                 headers: { "Authorization": `Bearer ${token}` }
             });
@@ -139,7 +139,7 @@ function enterEditMode(card) {
 
         const token = localStorage.getItem("token");
         try {
-            const response = await fetch(`http://localhost:5000/api/announcements/${encodeURIComponent(originalTitle)}`, {
+            const response = await fetch(`http://localhost:5001/api/announcements/${encodeURIComponent(originalTitle)}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -199,7 +199,7 @@ document.getElementById("postBtn")?.addEventListener("click", async () => {
 
         const today = new Date();
 
-        const response = await fetch("http://localhost:5000/api/announcements/", {
+        const response = await fetch("http://localhost:5001/api/announcements/", {
             method: "POST",
             headers: {
                 "content-type": "application/json",

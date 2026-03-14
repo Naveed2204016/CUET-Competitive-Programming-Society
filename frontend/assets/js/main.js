@@ -38,6 +38,16 @@ document.querySelector('.feature-card.announcements').addEventListener('click', 
     }
 });
 
+document.querySelector('.feature-card.contests').addEventListener('click', () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+        alert("Please login to view contests.");
+        window.location.href = "./index.html";
+    } else {
+        window.location.href = "./pages/contests.html";
+    }
+});
+
 const signupbtn = document.querySelector('.secondary-btn');
 
 signupbtn.addEventListener("click", () => {

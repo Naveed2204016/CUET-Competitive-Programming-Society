@@ -40,7 +40,7 @@ function renderMessage(message) {
 }
 
 async function fetchUsers() {
-    const response = await fetch("http://localhost:5000/api/leaderboard", {
+    const response = await fetch("http://localhost:5001/api/leaderboard", {
         headers: {
             Authorization: `Bearer ${tokenLB}`
         }
@@ -139,11 +139,11 @@ async function buildLeaderboard() {
     const solvedMap = Object.fromEntries(solvedCounts);
 
     const results = handles.map((user) => ({
-            username: user.username,
-            handle: user.handle,
-            solved: solvedMap[user.handle] || 0,
-            rating: ratingMap[user.handle.toLowerCase()] || 0
-        }))
+        username: user.username,
+        handle: user.handle,
+        solved: solvedMap[user.handle] || 0,
+        rating: ratingMap[user.handle.toLowerCase()] || 0
+    }))
         .sort((a, b) => {
             if (b.solved !== a.solved) {
                 return b.solved - a.solved;
