@@ -9,10 +9,10 @@ if (!tokenLB) {
 }
 
 // toggle nav buttons
-if (tokenLB) {
+/*if (tokenLB) {
     document.getElementById("loginBtn").style.display = "none";
     document.getElementById("profileBtn").style.display = "inline-block";
-}
+}*/
 
 function extractHandle(link) {
     if (!link) return null;

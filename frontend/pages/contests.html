@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Contests | CUET CPS</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">
+            <span class="logo-letter-bg">C</span>
+            <span class="logo-text">CUET</span>
+            <span class="logo-highlight">CP</span>
+            <span class="logo-text">Society</span>
+        </div>
+
+        <div class="nav-links">
+            <a href="../index.html">Home</a>
+            <a href="announcements.html">Announcements</a>
+            <a href="resources.html">Resources</a>
+            <a href="editorials.html">Editorials</a>
+            <a href="discussions.html">Discussions</a>
+            <a href="leaderboard.html">Leaderboard</a>
+            <a href="profile.html" id="profileBtn">Profile</a>
+        </div>
+    </nav>
+
+    <section class="page-header contests-header">
+        <h1>🏆 Contests</h1>
+        <p>Participate in upcoming contests and view past contest details</p>
+    </section>
+
+    <section class="create-contest" id="adminSection" style="display:none;">
+        <h2>Create New Contest</h2>
+
+        <input type="text" id="contestName" placeholder="Contest Name">
+        <input type="text" id="contestDate" placeholder="Select contest date & time">
+        <input type="text" id="contestlink" placeholder="Contest Link (e.g. Vjudge URL)">
+        <button class="primary-btn" id="createContestBtn">Create Contest</button>
+    </section>
+
+    <section class="contest-list" id="contestList">
+        
+    </section>
+
+    <script>
+    flatpickr("#contestDate", {
+    enableTime: true,
+    dateFormat: "Y-m-d H:i",
+    });
+    </script>
+
+    <script src="../assets/js/contests.js"></script>
+</body>
+</html>

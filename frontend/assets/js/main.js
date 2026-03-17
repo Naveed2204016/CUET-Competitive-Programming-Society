@@ -51,11 +51,3 @@ wcpbtn.addEventListener("click", () => {
     window.location.href = "./pages/why-cp.html";
 });
 
-// Temporary, will remove later once log out functionality is implemented
-const pbtn = document.getElementById("profileBtn");
-pbtn.addEventListener("click", () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem('role');
-    document.getElementById("loginBtn").style.display = "inline-block";
-    document.getElementById("profileBtn").style.display = "none";
-});

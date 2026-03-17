@@ -1,0 +1,518 @@
+const API_BASE = "http://localhost:5000/api/discussion";
+
+const token = localStorage.getItem("token");
+const storedUser = JSON.parse(localStorage.getItem("currentUser") || "null");
+
+const currentUser = {
+  id:
+    localStorage.getItem("id") ||
+    localStorage.getItem("userId") ||
+    storedUser?._id ||
+    storedUser?.id ||
+    storedUser?.ID ||
+    "",
+  name:
+    localStorage.getItem("username") ||
+    storedUser?.username ||
+    storedUser?.Username ||
+    "Guest",
+  role: (
+    localStorage.getItem("role") ||
+    storedUser?.role ||
+    storedUser?.Role ||
+    "member"
+  ).toLowerCase(),
+};
+
+const loginBtn = document.getElementById("loginBtn");
+const profileBtn = document.getElementById("profileBtn");
+const userBadge = document.getElementById("discussionUserBadge");
+const postBtn = document.getElementById("postBtn");
+const postInput = document.getElementById("postContent");
+const postsContainer = document.getElementById("postsContainer");
+
+let posts = [];
+let openComments = {};
+
+setupNavbar();
+setupIdentityBadge();
+setupEvents();
+loadDiscussions();
+
+function setupNavbar() {
+  if (!loginBtn || !profileBtn) return;
+
+  if (token) {
+    loginBtn.style.display = "none";
+    profileBtn.style.display = "inline-block";
+  } else {
+    loginBtn.style.display = "inline-block";
+    profileBtn.style.display = "none";
+  }
+}
+
+function setupIdentityBadge() {
+  if (!userBadge) return;
+  userBadge.textContent = token
+    ? `${currentUser.name} • ${currentUser.role}`
+    : "Guest • login to post";
+}
+
+function setupEvents() {
+  postInput.addEventListener("input", syncPostButton);
+  postBtn.addEventListener("click", createPost);
+  postsContainer.addEventListener("click", onPostsClick);
+  postsContainer.addEventListener("dblclick", onCommentDoubleClick);
+
+  document.addEventListener("click", (event) => {
+    if (!event.target.closest(".discussion-menu")) {
+      closeAllMenus();
+    }
+
+    if (!event.target.closest(".discussion-comment")) {
+      postsContainer
+        .querySelectorAll(".discussion-comment.show-delete")
+        .forEach((el) => el.classList.remove("show-delete"));
+    }
+  });
+
+  syncPostButton();
+}
+
+function syncPostButton() {
+  postBtn.disabled = postInput.value.trim() === "";
+}
+
+async function loadDiscussions() {
+  try {
+    const data = await apiRequest(API_BASE, { method: "GET" }, false);
+    posts = normalizePosts(data.discussions || []);
+    renderPosts();
+  } catch (error) {
+    console.error("Failed to load discussions:", error);
+    postsContainer.innerHTML = `
+      <div class="discussion-empty">
+        <h3>Unable to load discussions</h3>
+        <p>${escapeHtml(error.message || "Please try again.")}</p>
+      </div>
+    `;
+  }
+}
+
+function normalizePosts(items) {
+  return items
+    .map((item) => {
+      const postId = String(item._id || item.id || Date.now() + Math.random());
+      const authorObj = item.DID && typeof item.DID === "object" ? item.DID : null;
+
+      return {
+        id: postId,
+        title: item.Title || deriveTitle(item.Content || ""),
+        content: item.Content || "",
+        author: authorObj?.Username || item.author || "Member",
+        authorId: String(authorObj?._id || item.DID || item.authorId || ""),
+        role: authorObj?.Role ? String(authorObj.Role).toLowerCase() : "member",
+        createdAt: item.date || item.Date || new Date().toISOString(),
+        comments: normalizeComments(item.comments || []),
+      };
+    })
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+}
+
+function normalizeComments(items) {
+  return items.map((commentItem) => {
+    if (commentItem && typeof commentItem === "object") {
+      return {
+        id: String(commentItem._id || commentItem.id || Date.now() + Math.random()),
+        username: commentItem.username || "Member",
+        content: commentItem.content || "",
+        loaded: true,
+      };
+    }
+
+    return {
+      id: String(commentItem),
+      username: "Unknown",
+      content: "Comment data is not available in this response.",
+      loaded: false,
+    };
+  });
+}
+
+function renderPosts() {
+  if (!posts.length) {
+    postsContainer.innerHTML = `
+      <div class="discussion-empty">
+        <h3>No discussions yet</h3>
+        <p>Be the first to start a discussion.</p>
+      </div>
+    `;
+    return;
+  }
+
+  postsContainer.innerHTML = posts.map(renderPostCard).join("");
+}
+
+function renderPostCard(post) {
+  const canManagePostFlag = canManagePost(post);
+  const commentsVisible = Boolean(openComments[post.id]);
+
+  return `
+    <article class="discussion-post" data-post-id="${post.id}">
+      <div class="discussion-card-header">
+        <div>
+          <div class="discussion-post-meta">
+            <span class="post-author">${escapeHtml(post.author)}</span>
+            <span class="discussion-card-tag">${escapeHtml(post.role)}</span>
+            <span class="discussion-card-subtitle">${formatDate(post.createdAt)}</span>
+          </div>
+          <p class="discussion-card-subtitle">${escapeHtml(post.title)}</p>
+        </div>
+        ${canManagePostFlag ? renderMenu() : ""}
+      </div>
+
+      <div class="discussion-post-body">
+        <p class="post-content">${escapeHtml(post.content)}</p>
+      </div>
+
+      <div class="discussion-card-footer">
+        <div class="discussion-stats">
+          <span class="discussion-stat-pill">💬 ${post.comments.length} ${
+            post.comments.length === 1 ? "comment" : "comments"
+          }</span>
+        </div>
+        <div class="post-controls">
+          <button class="discussion-action-btn" data-action="toggle-comments">
+            ${commentsVisible ? "Hide comments" : "Comment"}
+          </button>
+        </div>
+      </div>
+
+      <section class="discussion-comments-wrap" ${commentsVisible ? "" : "hidden"}>
+        <div class="discussion-comments-list">${renderComments(post)}</div>
+        <div class="discussion-comment-composer">
+          <label class="discussion-field-label" for="commentInput-${post.id}">Add a comment</label>
+          <textarea id="commentInput-${post.id}" placeholder="Write your comment..."></textarea>
+          <div class="discussion-comment-composer-actions">
+            <span class="comment-delete-hint">Double-click your comment to show delete</span>
+            <button class="primary-btn" data-action="add-comment">Post Comment</button>
+          </div>
+        </div>
+      </section>
+    </article>
+  `;
+}
+
+function renderMenu() {
+  return `
+    <div class="discussion-menu">
+      <button class="discussion-menu-btn" data-action="toggle-menu" title="Post options">&#8942;</button>
+      <div class="discussion-dropdown">
+        <button data-action="edit-post">Edit</button>
+        <button data-action="delete-post">Delete</button>
+      </div>
+    </div>
+  `;
+}
+
+function renderComments(post) {
+  if (!post.comments.length) {
+    return '<div class="discussion-no-comments">No comments yet.</div>';
+  }
+
+  return post.comments
+    .map((comment) => {
+      const canManageCommentFlag = canManageComment(comment);
+
+      return `
+        <article class="discussion-comment ${
+          canManageCommentFlag ? "can-manage" : ""
+        }" data-comment-id="${comment.id}">
+          <div class="discussion-comment-meta">
+            <div>
+              <span class="discussion-comment-author">${escapeHtml(comment.username)}</span>
+            </div>
+          </div>
+          <p class="discussion-comment-text">${escapeHtml(comment.content)}</p>
+          ${
+            canManageCommentFlag
+              ? '<button class="discussion-comment-delete" data-action="delete-comment">Delete comment</button>'
+              : ""
+          }
+        </article>
+      `;
+    })
+    .join("");
+}
+
+async function createPost() {
+  if (!requireLogin("create a post")) return;
+
+  const content = postInput.value.trim();
+  if (!content) return;
+
+  const body = {
+    Title: deriveTitle(content),
+    Content: content,
+  };
+
+  try {
+    await apiRequest(API_BASE, {
+      method: "POST",
+      body: JSON.stringify(body),
+    });
+
+    postInput.value = "";
+    syncPostButton();
+    await loadDiscussions();
+  } catch (error) {
+    alert(error.message || "Failed to create discussion.");
+  }
+}
+
+async function onPostsClick(event) {
+  const actionEl = event.target.closest("[data-action]");
+  if (!actionEl) return;
+
+  const postEl = event.target.closest(".discussion-post");
+  if (!postEl) return;
+
+  const postId = postEl.dataset.postId;
+  const post = posts.find((item) => item.id === postId);
+  if (!post) return;
+
+  const action = actionEl.dataset.action;
+
+  if (action === "toggle-menu") {
+    event.stopPropagation();
+    toggleMenu(postEl);
+    return;
+  }
+
+  if (action === "toggle-comments") {
+    openComments[postId] = !openComments[postId];
+    renderPosts();
+    return;
+  }
+
+  if (action === "add-comment") {
+    await addComment(postId);
+    return;
+  }
+
+  if (action === "edit-post") {
+    closeAllMenus();
+    await editPost(post);
+    return;
+  }
+
+  if (action === "delete-post") {
+    closeAllMenus();
+    await deletePost(post);
+    return;
+  }
+
+  if (action === "delete-comment") {
+    const commentEl = event.target.closest(".discussion-comment");
+    if (!commentEl) return;
+
+    const comment = post.comments.find((c) => c.id === commentEl.dataset.commentId);
+    if (!comment) return;
+
+    await deleteComment(post, comment);
+  }
+}
+
+async function addComment(postId) {
+  if (!requireLogin("add a comment")) return;
+
+  const input = document.getElementById(`commentInput-${postId}`);
+  if (!input) return;
+
+  const text = input.value.trim();
+  if (!text) return;
+
+  try {
+    await apiRequest(`${API_BASE}/${postId}/comments`, {
+      method: "POST",
+      body: JSON.stringify({ content: text }),
+    });
+
+    openComments[postId] = true;
+    await loadDiscussions();
+  } catch (error) {
+    alert(error.message || "Failed to add comment.");
+  }
+}
+
+async function editPost(post) {
+  if (!requireLogin("edit a post")) return;
+
+  const nextContent = window.prompt("Edit your post", post.content);
+  if (nextContent === null) return;
+
+  const cleanContent = nextContent.trim();
+  if (!cleanContent) {
+    alert("Post content cannot be empty.");
+    return;
+  }
+
+  try {
+    await apiRequest(`${API_BASE}/${post.id}`, {
+      method: "PUT",
+      body: JSON.stringify({
+        Title: post.title || deriveTitle(cleanContent),
+        Content: cleanContent,
+      }),
+    });
+
+    await loadDiscussions();
+  } catch (error) {
+    alert(error.message || "Failed to update post.");
+  }
+}
+
+async function deletePost(post) {
+  if (!requireLogin("delete a post")) return;
+  if (!window.confirm("Delete this discussion post?")) return;
+
+  try {
+    await apiRequest(`${API_BASE}/${post.id}`, { method: "DELETE" });
+    delete openComments[post.id];
+    await loadDiscussions();
+  } catch (error) {
+    alert(error.message || "Failed to delete post.");
+  }
+}
+
+async function deleteComment(post, comment) {
+  if (!requireLogin("delete a comment")) return;
+
+  if (!comment.loaded) {
+    alert("Comment details are not available. Reload and try again.");
+    return;
+  }
+
+  if (!window.confirm("Delete this comment?")) return;
+
+  try {
+    await apiRequest(`${API_BASE}/${post.id}/comments/${comment.id}`, {
+      method: "DELETE",
+    });
+
+    await loadDiscussions();
+  } catch (error) {
+    alert(error.message || "Failed to delete comment.");
+  }
+}
+
+function onCommentDoubleClick(event) {
+  const commentEl = event.target.closest(".discussion-comment.can-manage");
+  if (!commentEl) return;
+
+  postsContainer
+    .querySelectorAll(".discussion-comment.show-delete")
+    .forEach((el) => {
+      if (el !== commentEl) el.classList.remove("show-delete");
+    });
+
+  commentEl.classList.toggle("show-delete");
+}
+
+function canManagePost(post) {
+  if (!token) return false;
+
+  const currentId = String(currentUser.id || "").trim();
+  const ownerId = String(post.authorId || "").trim();
+  const currentName = String(currentUser.name || "").trim().toLowerCase();
+  const ownerName = String(post.author || "").trim().toLowerCase();
+
+  return (
+    currentUser.role === "admin" ||
+    (currentId !== "" && ownerId !== "" && currentId === ownerId) ||
+    (currentName !== "" && ownerName !== "" && currentName === ownerName)
+  );
+}
+
+function canManageComment(comment) {
+  if (!token || !comment.loaded) return false;
+  return String(currentUser.name) === String(comment.username);
+}
+
+function toggleMenu(postEl) {
+  const dropdown = postEl.querySelector(".discussion-dropdown");
+  if (!dropdown) return;
+
+  const shouldOpen = !dropdown.classList.contains("open");
+  closeAllMenus();
+  if (shouldOpen) dropdown.classList.add("open");
+}
+
+function closeAllMenus() {
+  postsContainer
+    .querySelectorAll(".discussion-dropdown.open")
+    .forEach((menu) => menu.classList.remove("open"));
+}
+
+function deriveTitle(content) {
+  const singleLine = content.replace(/\s+/g, " ").trim();
+  return singleLine.length > 60 ? `${singleLine.slice(0, 57)}...` : singleLine;
+}
+
+function requireLogin(actionText) {
+  if (token) return true;
+  alert(`Please login to ${actionText}.`);
+  window.location.href = "../pages/login.html";
+  return false;
+}
+
+async function apiRequest(url, options = {}, requireAuth = true) {
+  const headers = {
+    "Content-Type": "application/json",
+    ...(options.headers || {}),
+  };
+
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
+  if (requireAuth && !token) {
+    throw new Error("Please login first.");
+  }
+
+  const response = await fetch(url, {
+    ...options,
+    headers,
+  });
+
+  const data = await response.json().catch(() => ({}));
+
+  if (!response.ok || data.success === false) {
+    const message = data.message || `Request failed (${response.status})`;
+    throw new Error(message);
+  }
+
+  return data;
+}
+
+function formatDate(value) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "Just now";
+
+  return new Intl.DateTimeFormat("en", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  }).format(date);
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}

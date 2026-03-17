@@ -8,6 +8,9 @@ const announcementRoutes = require("./routes/announcment");
 const resourcesRoutes = require("./routes/resources");
 const leaderboardRoutes = require("./routes/leaderboard");
 const editorialsRoutes = require("./routes/editorials");
+const discussionRoutes = require("./routes/discussion");
+const contestsRoutes = require("./routes/contests");
+const profileRoutes = require("./routes/profile");
 
 const app = express();
 
@@ -22,6 +25,9 @@ app.use("/api/announcements", announcementRoutes);
 app.use("/api/resources", resourcesRoutes);
 app.use("/api/leaderboard", leaderboardRoutes);
 app.use("/api/editorials", editorialsRoutes);
+app.use("/api/discussion", discussionRoutes);
+app.use("/api/contests", contestsRoutes);
+app.use("/api/profile", profileRoutes);
 
 app.get("/", (req, res) => {
     res.send("CUET CP Society Backend Running...");

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Profile | CUET CPS</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">
+            <span class="logo-letter-bg">C</span>
+            <span class="logo-text">CUET</span>
+            <span class="logo-highlight">CP</span>
+            <span class="logo-text">Society</span>
+        </div>
+
+        <div class="nav-links">
+            <a href="../index.html">Home</a>
+            <a href="resources.html">Resources</a>
+            <a href="contests.html">Contests</a>
+            <a href="editorials.html">Editorials</a>
+            <a href="discussions.html">Discussions</a>
+            <a href="leaderboard.html">Leaderboard</a>
+
+            <a href="#" id="logoutBtn">Logout</a>
+        </div>
+    </nav>
+
+    <section class="page-header">
+        <h1>👤 My Profile</h1>
+        <p>View and manage your competitive programming profile</p>
+    </section>
+
+    <section class="profile-section">
+        <div class="profile-card">
+            <div class="profile-header">
+               <h2>Bio and Other Details</h2>
+                <div class="profile-badge">Logged in member</div>
+            </div>
+
+            <div class="profile-content">
+                
+            </div>
+            <div class="profile-actions">
+                <button class="primary-btn">Edit Profile</button>
+                <button class="secondary-btn">Change Password</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="my-posts-header">
+        <h2>My Discussion Posts</h2>
+        <p>View and manage the discussion threads you've started in the community</p>
+    </section>
+
+    <section class="my-posts-section">
+        <section id="postsContainer" class="discussions-list">
+        <!-- populated by JavaScript -->
+      </section>
+    </section>
+
+    
+    <script src="../assets/js/profile.js"></script>
+</body>
+</html>
