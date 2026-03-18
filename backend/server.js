@@ -14,7 +14,7 @@ const profileRoutes = require("./routes/profile");
 
 const app = express();
 
-mongoose.connect('mongodb://localhost/cuet-cp-society')
+mongoose.connect(process.env.MONGO_URI_TEST)
     .then(() => console.log("Connection successful"))
     .catch((err) => console.error("Connection failed:", err));
 
