@@ -33,6 +33,7 @@ const postsContainer = document.getElementById("postsContainer");
 
 let posts = [];
 let openComments = {};
+let editingPostId = null;
 
 setupNavbar();
 setupIdentityBadge();
@@ -302,7 +303,17 @@ async function onPostsClick(event) {
 
   if (action === "edit-post") {
     closeAllMenus();
-    await editPost(post);
+    enterPostEditMode(postEl, post);
+    return;
+  }
+
+  if (action === "save-post-edit") {
+    await savePostEdit(postEl, post);
+    return;
+  }
+
+  if (action === "cancel-post-edit") {
+    cancelPostEdit(postEl, post);
     return;
   }
 
@@ -345,15 +356,81 @@ async function addComment(postId) {
   }
 }
 
-async function editPost(post) {
+function enterPostEditMode(postEl, post) {
   if (!requireLogin("edit a post")) return;
+  if (!postEl || postEl.dataset.editing === "true") return;
 
-  const nextContent = window.prompt("Edit your post", post.content);
-  if (nextContent === null) return;
+  if (editingPostId && editingPostId !== post.id) {
+    alert("Finish editing the current post first.");
+    return;
+  }
 
-  const cleanContent = nextContent.trim();
-  if (!cleanContent) {
-    alert("Post content cannot be empty.");
+  const titleEl = postEl.querySelector(".discussion-card-header > div > p.discussion-card-subtitle");
+  const contentEl = postEl.querySelector(".post-content");
+  const bodyEl = postEl.querySelector(".discussion-post-body");
+  if (!titleEl || !contentEl || !bodyEl) return;
+
+  const titleInput = document.createElement("input");
+  titleInput.type = "text";
+  titleInput.className = "edit-title";
+  titleInput.value = post.title || "";
+
+  const contentTextarea = document.createElement("textarea");
+  contentTextarea.className = "edit-content";
+  contentTextarea.value = post.content || "";
+
+  const actions = document.createElement("div");
+  actions.className = "discussion-inline-edit-actions";
+  actions.innerHTML = `
+    <button class="primary-btn" data-action="save-post-edit">Save</button>
+    <button class="secondary-btn" data-action="cancel-post-edit">Cancel</button>
+  `;
+
+  titleEl.replaceWith(titleInput);
+  contentEl.replaceWith(contentTextarea);
+  bodyEl.appendChild(actions);
+
+  postEl.dataset.editing = "true";
+  editingPostId = post.id;
+  titleInput.focus();
+}
+
+function cancelPostEdit(postEl, post) {
+  if (!postEl || postEl.dataset.editing !== "true") return;
+
+  const titleInput = postEl.querySelector(".edit-title");
+  const contentTextarea = postEl.querySelector(".edit-content");
+  const actions = postEl.querySelector(".discussion-inline-edit-actions");
+  if (!titleInput || !contentTextarea) return;
+
+  const titleEl = document.createElement("p");
+  titleEl.className = "discussion-card-subtitle";
+  titleEl.textContent = post.title || "";
+
+  const contentEl = document.createElement("p");
+  contentEl.className = "post-content";
+  contentEl.textContent = post.content || "";
+
+  titleInput.replaceWith(titleEl);
+  contentTextarea.replaceWith(contentEl);
+  actions?.remove();
+
+  delete postEl.dataset.editing;
+  editingPostId = null;
+}
+
+async function savePostEdit(postEl, post) {
+  if (!postEl || postEl.dataset.editing !== "true") return;
+
+  const titleInput = postEl.querySelector(".edit-title");
+  const contentTextarea = postEl.querySelector(".edit-content");
+  if (!titleInput || !contentTextarea) return;
+
+  const newTitle = titleInput.value.trim();
+  const cleanContent = contentTextarea.value.trim();
+
+  if (!newTitle || !cleanContent) {
+    alert("Title and post content cannot be empty.");
     return;
   }
 
@@ -361,11 +438,12 @@ async function editPost(post) {
     await apiRequest(`${API_BASE}/${post.id}`, {
       method: "PUT",
       body: JSON.stringify({
-        Title: post.title || deriveTitle(cleanContent),
+        Title: newTitle,
         Content: cleanContent,
       }),
     });
 
+    editingPostId = null;
     await loadDiscussions();
   } catch (error) {
     alert(error.message || "Failed to update post.");

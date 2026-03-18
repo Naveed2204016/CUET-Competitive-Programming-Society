@@ -1,285 +1,331 @@
-// Check if user is admin
-const token = localStorage.getItem("token");
-const role = localStorage.getItem("role");
-
-const adminSection = document.getElementById("adminSection");
-if (role === "admin") {
-  adminSection.style.display = "block";
-}
-
-// Handle logout
-const profileBtn = document.getElementById("profileBtn");
-profileBtn.addEventListener("click", () => {
-  localStorage.removeItem("token");
-  localStorage.removeItem("role");
-  localStorage.removeItem("username");
-  localStorage.removeItem("id");
-  window.location.href = "../index.html";
-});
-
-// Fetch and display all editorials
-async function loadEditorials() {
-  try {
-    const response = await fetch("http://localhost:5000/api/editorials", {
-      headers: { "content-type": "application/json" }
-    });
-    const data = await response.json();
-
-    if (data.success) {
-      displayEditorials(data.editorials);
-    } else {
-      document.getElementById("editorialsList").innerHTML = `
-        <div style="text-align: center; padding: 60px 20px; color: #9ca3af;">
-          <div style="font-size: 48px; margin-bottom: 15px;">⚠️</div>
-          <p>Unable to load editorials.</p>
-        </div>
-      `;
-    }
-  } catch (err) {
-    console.error(err);
-    document.getElementById("editorialsList").innerHTML = `
-      <div style="text-align: center; padding: 60px 20px; color: #9ca3af;">
-        <div style="font-size: 48px; margin-bottom: 15px;">❌</div>
-        <p>Error loading editorials. Please try again later.</p>
-      </div>
-    `;
-  }
-}
-
-// Display editorials
-function displayEditorials(editorials) {
-  const container = document.getElementById("editorialsList");
-  container.innerHTML = "";
-
-  if (editorials.length === 0) {
-    container.innerHTML = `
-      <div style="text-align: center; padding: 60px 20px; color: #9ca3af;">
-        <div style="font-size: 48px; margin-bottom: 15px;">📚</div>
-        <p style="font-size: 18px;">No editorials yet. Check back soon!</p>
-      </div>
-    `;
+let isAdmin = false;
+document.addEventListener("DOMContentLoaded", async () =>{
+  const token = localStorage.getItem("token");
+  if (!token) {
+    alert("Please log in to access the editorials page.");
+    window.location.href = "../pages/login.html";
     return;
   }
 
-  editorials.forEach(ed => {
-    const truncatedContent = ed.Content.length > 200 ? ed.Content.substring(0, 200) + '...' : ed.Content;
-    const difficultyClass = ed.Difficulty.toLowerCase();
+  const response = await fetch("http://localhost:5000/api/editorials/post",
+    {
+      method: "GET",
+      headers: { "Authorization": `Bearer ${token}` }
+    }
+  );
+  const data = await response.json();
+  if(data.success && data.message) {
+    isAdmin = true;
+    document.getElementById("adminSection").style.display = "block";
+  }
+  else
+  {
+    console.log(data.message);
+    document.getElementById("adminSection").style.display = "none";
+  }
 
-    const card = document.createElement("div");
-    card.className = "editorial-card";
-    card.innerHTML = `
-      <div class="editorial-header">
-        <h3>${escapeHtml(ed.ProblemTitle)}</h3>
-        <span class="difficulty ${difficultyClass}">${ed.Difficulty}</span>
-      </div>
-      <p class="contest">📌 ${escapeHtml(ed.ContestName)}</p>
-      <p class="author">✍️ By ${escapeHtml(ed.Author.Username)}</p>
-      <div class="editorial-content">
-        ${escapeHtml(truncatedContent)}
-      </div>
-      <a href="${escapeHtml(ed.ProblemLink)}" target="_blank" class="problem-link">🔗 View Problem Solution</a>
-      ${role === "admin" ? `
-        <div class="admin-actions">
-          <button class="edit-btn" onclick="editEditorial('${ed._id}')">✏️ Edit</button>
-          <button class="delete-btn" onclick="deleteEditorial('${ed._id}')">🗑️ Delete</button>
+  const response2 = await fetch("http://localhost:5000/api/editorials/",
+    {
+      method: "GET",
+      headers: { "Authorization": `Bearer ${token}` }
+    }
+  );
+
+const data2 = await response2.json();
+  if(data2.success)  {
+    const editorialsContainer = document.getElementById("editorialsList");
+    if(data2.editorials.length === 0) {
+    editorialsContainer.innerHTML = "<p>🚧 No editorials available yet. Stay tuned and check back soon!</p>";
+    } else {
+      data2.editorials.forEach(editorial => {
+      const menuHTML = isAdmin
+        ? `
+          <div class="ann-menu">
+            <button class="ann-menu-btn" title="Editorial options">&#8942;</button>
+            <div class="ann-dropdown">
+              <button class="ann-edit-btn">Edit</button>
+              <button class="ann-delete-btn">Delete</button>
+            </div>
+          </div>
+        `
+        : "";
+
+      const card = document.createElement("div");
+      card.classList.add("editorial-card");
+      card.dataset.id = editorial._id;
+      card.dataset.name = editorial.contestName;
+      card.innerHTML = `
+        <div class="editorial-header">
+          <h3>${editorial.contestName}</h3>
+          ${menuHTML}
         </div>
-      ` : ""}
-    `;
-    container.appendChild(card);
+        <div class="editorial-content">
+          <p>${editorial.editorialContent}</p>
+        </div>
+      `;
+      
+      if(isAdmin) {
+        attachMenuListeners(card);
+      }
+      editorialsContainer.appendChild(card);
+      });
+    }
+  }
+
+  document.addEventListener("click", () => {
+    document.querySelectorAll(".ann-dropdown.open").forEach((d) => d.classList.remove("open"));
   });
+});
+
+
+function attachMenuListeners(card) {
+    const menuBtn = card.querySelector(".ann-menu-btn");
+    const dropdown = card.querySelector(".ann-dropdown");
+    const editBtn = card.querySelector(".ann-edit-btn");
+    const deleteBtn = card.querySelector(".ann-delete-btn");
+
+    menuBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        document.querySelectorAll(".ann-dropdown.open").forEach(d => {
+            if (d !== dropdown) d.classList.remove("open");
+        });
+        dropdown.classList.toggle("open");
+    });
+
+    deleteBtn.addEventListener("click", async () => {
+        dropdown.classList.remove("open");
+        const contestName = card.dataset.name;
+        if (!confirm(`Delete contest "${contestName}"?`)) return;
+
+        const token = localStorage.getItem("token");
+        try {
+            const id = card.dataset.id;
+            const response = await fetch(`http://localhost:5000/api/editorials/${encodeURIComponent(id)}`, {
+                method: "DELETE",
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+            const data = await response.json();
+            if (data.success) {
+                card.remove();
+            } else {
+                alert(data.message || "Failed to delete editorial.");
+            }
+        } catch (err) {
+            console.error("Error deleting editorial:", err);
+            alert("An error occurred while deleting.");
+        }
+    });
+
+    editBtn.addEventListener("click", () => {
+        dropdown.classList.remove("open");
+        enterEditMode(card);
+    });
 }
 
-// Escape HTML to prevent XSS
-function escapeHtml(text) {
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
-}
+function enterEditMode(card) {
+  const titleEl = card.querySelector(".editorial-header h3");
+  const contentEl = card.querySelector(".editorial-content p");
 
-// Create editorial (Admin)
-const editorialForm = document.getElementById("editorialForm");
-if (editorialForm) {
-  editorialForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
+  if (!titleEl || !contentEl) return;
+  if (card.dataset.editing === "true") return;
 
-    const problemTitle = document.getElementById("problemTitle").value;
-    const contestName = document.getElementById("contestName").value;
-    const problemLink = document.getElementById("problemLink").value;
-    const content = document.getElementById("editorialContent").value;
-    const difficulty = document.getElementById("difficulty").value;
+  const originalName = card.dataset.name || titleEl.textContent.trim();
 
-    const submitBtn = editorialForm.querySelector('button[type="submit"]');
-    const originalText = submitBtn.textContent;
-    submitBtn.disabled = true;
-    submitBtn.textContent = "Publishing...";
+  const nameInput = document.createElement("input");
+  nameInput.type = "text";
+  nameInput.classList.add("edit-title");
+  nameInput.value = titleEl.textContent.trim();
+
+  const contentTextarea = document.createElement("textarea");
+  contentTextarea.classList.add("edit-content");
+  contentTextarea.value = contentEl.textContent.trim();
+
+  titleEl.replaceWith(nameInput);
+  contentEl.replaceWith(contentTextarea);
+
+  card.dataset.editing = "true";
+  nameInput.focus();
+
+  const saveEdit = async () => {
+    const newName = nameInput.value.trim();
+    const newContent = contentTextarea.value.trim();
+
+    if (!newName || !newContent) {
+      alert("Contest name and editorial content cannot be empty.");
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+    const id = card.dataset.id;
 
     try {
-      const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:5000/api/editorials", {
-        method: "POST",
+      const response = await fetch(`http://localhost:5000/api/editorials/${encodeURIComponent(id)}`, {
+        method: "PUT",
         headers: {
-          "content-type": "application/json",
+          "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify({
-          ProblemTitle: problemTitle,
-          ContestName: contestName,
-          ProblemLink: problemLink,
-          Content: content,
-          Difficulty: difficulty
+          contestName: newName,
+          editorialContent: newContent
         })
       });
 
       const data = await response.json();
-      if (data.success) {
-        alert("✅ Editorial published successfully!");
-        editorialForm.reset();
-        loadEditorials();
-      } else {
-        alert("❌ Failed to publish editorial: " + (data.message || "Unknown error"));
+      if (!data.success) {
+        alert(data.message || "Failed to update editorial.");
+        return;
       }
+
+      card.dataset.name = newName;
+
+      const newTitleEl = document.createElement("h3");
+      newTitleEl.textContent = newName;
+      nameInput.replaceWith(newTitleEl);
+
+      const newContentEl = document.createElement("p");
+      newContentEl.textContent = newContent;
+      contentTextarea.replaceWith(newContentEl);
+
+      delete card.dataset.editing;
     } catch (err) {
-      alert("❌ Error publishing editorial: " + err.message);
-    } finally {
-      submitBtn.disabled = false;
-      submitBtn.textContent = originalText;
+      console.error("Error updating editorial:", err);
+      alert("An error occurred while updating editorial.");
+    }
+  };
+
+  nameInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      saveEdit();
+    }
+  });
+
+  contentTextarea.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      saveEdit();
     }
   });
 }
 
-// Delete editorial
-async function deleteEditorial(editorialId) {
-  if (!confirm("⚠️ Are you sure you want to delete this editorial? This action cannot be undone.")) return;
 
-  try {
-    const token = localStorage.getItem("token");
-    const response = await fetch(`http://localhost:5000/api/editorials/${editorialId}`, {
-      method: "DELETE",
-      headers: {
-        "content-type": "application/json",
-        "Authorization": `Bearer ${token}`
-      }
-    });
+document.addEventListener("click", () => {
+    document.querySelectorAll(".ann-dropdown.open").forEach(d => d.classList.remove("open"));
+});
 
-    const data = await response.json();
-    if (data.success) {
-      alert("✅ Editorial deleted successfully!");
-      loadEditorials();
-    } else {
-      alert("❌ Failed to delete editorial: " + (data.message || "Unknown error"));
-    }
-  } catch (err) {
-    alert("❌ Error deleting editorial: " + err.message);
+
+document.getElementById("publishEditorialBtn")?.addEventListener("click", async (event) => {
+  event.preventDefault();
+  await publishEditorial();
+});
+
+document.getElementById("editorialForm")?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  await publishEditorial();
+});
+
+async function publishEditorial() {
+  const contestNameInput = document.getElementById("contestName");
+  const editorialContentInput = document.getElementById("editorialContent");
+  const editorialsContainer = document.getElementById("editorialsList");
+
+  if (!contestNameInput || !editorialContentInput || !editorialsContainer) return;
+
+  const contestName = contestNameInput.value.trim();
+  const editorialContent = editorialContentInput.value.trim();
+
+  if (!contestName || !editorialContent) {
+    alert("Please fill in both contest name and editorial content.");
+    return;
   }
-}
 
-// Edit editorial - Open modal with editorial data
-async function editEditorial(editorialId) {
+  const token = localStorage.getItem("token");
+
   try {
-    // Fetch the editorial data
-    const response = await fetch(`http://localhost:5000/api/editorials/${editorialId}`, {
-      headers: { "content-type": "application/json" }
+    const response = await fetch("http://localhost:5000/api/editorials/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        contestName,
+        editorialContent
+      })
     });
-    const data = await response.json();
 
-    if (!data.success || !data.editorial) {
-      alert("❌ Failed to load editorial for editing");
+    const data = await response.json();
+    if (!data.success) {
+      alert(data.message || "Failed to publish editorial.");
       return;
     }
 
-    const ed = data.editorial;
+    // Fetch latest list to get the created editorial id, then render only the newest card.
+    const refreshResponse = await fetch("http://localhost:5000/api/editorials/", {
+      method: "GET",
+      headers: { "Authorization": `Bearer ${token}` }
+    });
 
-    // Create modal
-    const modal = document.createElement("div");
-    modal.id = "editModal";
-    modal.className = "edit-modal";
-    modal.innerHTML = `
-      <div class="edit-modal-content">
-        <div class="edit-modal-header">
-          <h2>✏️ Edit Editorial</h2>
-          <button class="close-modal-btn" onclick="closeEditModal()">✕</button>
+    const refreshData = await refreshResponse.json();
+    if (!refreshData.success || !Array.isArray(refreshData.editorials) || !refreshData.editorials.length) {
+      alert("Editorial published, but failed to refresh list.");
+      return;
+    }
+
+    const latest = refreshData.editorials[refreshData.editorials.length - 1];
+    const menuHTML = isAdmin
+      ? `
+        <div class="ann-menu">
+        <button class="ann-menu-btn" title="Editorial options">&#8942;</button>
+        <div class="ann-dropdown">
+          <button class="ann-edit-btn">Edit</button>
+          <button class="ann-delete-btn">Delete</button>
         </div>
-        <form id="editForm">
-          <input type="text" id="editProblemTitle" value="${escapeHtml(ed.ProblemTitle)}" placeholder="Problem Title" required>
-          <input type="text" id="editContestName" value="${escapeHtml(ed.ContestName)}" placeholder="Contest Name" required>
-          <input type="url" id="editProblemLink" value="${escapeHtml(ed.ProblemLink)}" placeholder="Problem Link" required>
-          <textarea id="editContent" placeholder="Editorial Content" required>${escapeHtml(ed.Content)}</textarea>
-          <select id="editDifficulty" required>
-            <option value="Easy" ${ed.Difficulty === 'Easy' ? 'selected' : ''}>Easy</option>
-            <option value="Medium" ${ed.Difficulty === 'Medium' ? 'selected' : ''}>Medium</option>
-            <option value="Hard" ${ed.Difficulty === 'Hard' ? 'selected' : ''}>Hard</option>
-          </select>
-          <div class="modal-actions">
-            <button type="submit" class="primary-btn">💾 Save Changes</button>
-            <button type="button" class="secondary-btn" onclick="closeEditModal()">Cancel</button>
-          </div>
-        </form>
+        </div>
+      `
+      : "";
+
+    const card = document.createElement("div");
+    card.classList.add("editorial-card");
+    card.dataset.id = latest._id;
+    card.dataset.name = latest.contestName;
+    card.innerHTML = `
+      <div class="editorial-header">
+        <h3>${latest.contestName}</h3>
+        ${menuHTML}
+      </div>
+      <div class="editorial-content">
+        <p>${latest.editorialContent}</p>
       </div>
     `;
 
-    document.body.appendChild(modal);
+    const emptyMessage = editorialsContainer.querySelector("p");
+    if (emptyMessage && emptyMessage.textContent.includes("No editorials available yet")) {
+      editorialsContainer.innerHTML = "";
+    }
 
-    // Handle form submission
-    document.getElementById("editForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
+    if (isAdmin) {
+      attachMenuListeners(card);
+    }
 
-      const submitBtn = document.querySelector("#editForm button[type='submit']");
-      const originalText = submitBtn.textContent;
-      submitBtn.disabled = true;
-      submitBtn.textContent = "Saving...";
-
-      try {
-        const token = localStorage.getItem("token");
-        const updateResponse = await fetch(`http://localhost:5000/api/editorials/${editorialId}`, {
-          method: "PUT",
-          headers: {
-            "content-type": "application/json",
-            "Authorization": `Bearer ${token}`
-          },
-          body: JSON.stringify({
-            ProblemTitle: document.getElementById("editProblemTitle").value,
-            ContestName: document.getElementById("editContestName").value,
-            ProblemLink: document.getElementById("editProblemLink").value,
-            Content: document.getElementById("editContent").value,
-            Difficulty: document.getElementById("editDifficulty").value
-          })
-        });
-
-        const updateData = await updateResponse.json();
-        if (updateData.success) {
-          alert("✅ Editorial updated successfully!");
-          closeEditModal();
-          loadEditorials();
-        } else {
-          alert("❌ Failed to update editorial: " + (updateData.message || "Unknown error"));
-        }
-      } catch (err) {
-        alert("❌ Error updating editorial: " + err.message);
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = originalText;
-      }
-    });
+    editorialsContainer.prepend(card);
+    contestNameInput.value = "";
+    editorialContentInput.value = "";
   } catch (err) {
-    alert("❌ Error loading editorial: " + err.message);
+    console.error("Error publishing editorial:", err);
+    alert("An error occurred while publishing editorial.");
   }
 }
 
-// Close edit modal
-function closeEditModal() {
-  const modal = document.getElementById("editModal");
-  if (modal) {
-    modal.remove();
-  }
-}
 
-// Close modal when clicking outside
-document.addEventListener("click", (e) => {
-  const modal = document.getElementById("editModal");
-  if (modal && e.target === modal) {
-    closeEditModal();
-  }
-});
 
-// Load editorials on page load
-window.addEventListener("load", loadEditorials);
+
+
+
+
+
+
+
+
+

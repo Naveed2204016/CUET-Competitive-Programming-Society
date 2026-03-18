@@ -51,3 +51,59 @@ wcpbtn.addEventListener("click", () => {
     window.location.href = "./pages/why-cp.html";
 });
 
+
+document.querySelector('.feature-card.resources').addEventListener('click', () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+        alert("Please login to view resources.");
+        window.location.href = "./index.html";
+    } else {
+        window.location.href = "./pages/resources.html";
+    }
+});
+
+
+document.querySelector('.feature-card.contests').addEventListener('click', () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+        alert("Please login to view contests.");
+        window.location.href = "./index.html";
+    } else {
+        window.location.href = "./pages/contests.html";
+    }
+});
+
+document.querySelector('.feature-card.editorials').addEventListener('click', () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+        alert("Please login to view editorials.");
+        window.location.href = "./index.html";
+    }
+    else {
+        window.location.href = "./pages/editorials.html";
+    }
+});
+
+document.querySelector('.feature-card.discussions').addEventListener('click', () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+        alert("Please login to view discussions.");
+        window.location.href = "./index.html";
+    }
+    else {
+        window.location.href = "./pages/discussions.html";
+    }
+});
+
+document.querySelector('.feature-card.leaderboard').addEventListener('click', () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+        alert("Please login to view leaderboard.");
+        window.location.href = "./index.html";
+    }
+    else {
+        window.location.href = "./pages/leaderboard.html";
+    }
+});
+
+
