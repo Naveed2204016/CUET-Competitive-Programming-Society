@@ -21,10 +21,11 @@
       <a href="../index.html">Home</a>
       <a href="announcements.html">Announcements</a>
       <a href="resources.html">Resources</a>
+      <a href="contests.html">Contests</a>
       <a href="discussions.html">Discussions</a>
       <a href="leaderboard.html">Leaderboard</a>
 
-      <a href="#" id="profileBtn">Profile</a>
+      <a href="profile.html" id="profileBtn">Profile</a>
     </div>
   </nav>
 
@@ -40,18 +41,10 @@
   <section class="admin-section" id="adminSection" style="display: none;">
     <h2>📝 Create New Editorial</h2>
     <form id="editorialForm">
-      <input type="text" id="problemTitle" placeholder="Problem Title (e.g., Two Sum, Graph Coloring)" required>
-      <input type="text" id="contestName" placeholder="Contest Name (e.g., Codeforces Round 900, LeetCode)" required>
-      <input type="url" id="problemLink" placeholder="Problem Link (https://...)" required>
+      <input type="text" id="contestName" placeholder="Contest Name (e.g., TFC-001)" required>
       <textarea id="editorialContent" placeholder="Editorial Content (approach, solution, time complexity, etc.)"
         rows="8" required></textarea>
-      <select id="difficulty" required>
-        <option value="">Select Difficulty Level</option>
-        <option value="Easy">Easy</option>
-        <option value="Medium">Medium</option>
-        <option value="Hard">Hard</option>
-      </select>
-      <button type="submit" class="primary-btn">✨ Publish Editorial</button>
+      <button type="submit" id="publishEditorialBtn" class="primary-btn">✨ Publish Editorial</button>
     </form>
   </section>
 
@@ -59,7 +52,7 @@
   <section class="editorials-section">
     <h2>All Editorials</h2>
     <div id="editorialsList" class="editorials-container">
-      <p>Loading editorials...</p>
+
     </div>
   </section>
 

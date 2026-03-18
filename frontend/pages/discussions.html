@@ -19,13 +19,12 @@
         <a href="../index.html">Home</a>
         <a href="announcements.html">Announcements</a>
         <a href="resources.html">Resources</a>
-        <a href="#">Contests</a>
-        <a href="#">Editorials</a>
+        <a href="contests.html">Contests</a>
+        <a href="editorials.html">Editorials</a>
         <a href="discussions.html">Discussions</a>
         <a href="leaderboard.html">Leaderboard</a>
 
-        <a href="#" id="loginBtn">Login</a>
-        <a href="#" id="profileBtn" style="display: none">Profile</a>
+        <a href="profile.html" id="profileBtn">Profile</a>
       </div>
     </nav>
 
@@ -34,26 +33,73 @@
       <div class="container">
         <h1>💬 Community Discussions</h1>
         <p>
-          Any member or admin can create a post. Others may upvote and comment
-          on the posts.
+          Start a problem-solving thread, ask for guidance, or share an idea
+          with the CUET CP community.
         </p>
+        <div class="discussion-hero-highlights">
+          <div class="discussion-highlight-card">
+            <span class="highlight-label">Open to</span>
+            <strong>Members and admins</strong>
+          </div>
+          <div class="discussion-highlight-card">
+            <span class="highlight-label">Quick actions</span>
+            <strong>Edit, delete, comment</strong>
+          </div>
+          <div class="discussion-highlight-card">
+            <span class="highlight-label">Tip</span>
+            <strong>Double-click a comment to manage it</strong>
+          </div>
+        </div>
       </div>
     </section>
 
     <!-- New post area -->
-    <section class="new-post" id="newPostSection">
-      <textarea
-        id="postContent"
-        placeholder="Share something with the community..."
-      ></textarea>
-      <button class="primary-btn" id="postBtn">Post</button>
+    <section class="discussion-composer-wrap container" id="newPostSection">
+      <div class="discussion-composer-card">
+        <div class="discussion-composer-header">
+          <div>
+            <p class="discussion-section-label">Start a discussion</p>
+            <h2>What is everyone working on today?</h2>
+          </div>
+          <div class="discussion-composer-badge" id="discussionUserBadge">
+            Logged in member
+          </div>
+        </div>
+
+        <label class="discussion-field-label" for="postContent">
+          Your post
+        </label>
+        <textarea
+          id="postContent"
+          placeholder="Share a problem, ask for help, or start a useful discussion..."
+        ></textarea>
+
+        <div class="discussion-composer-footer">
+          <p class="discussion-helper-text">
+            Keep posts clear and specific so others can help faster.
+          </p>
+          <button class="primary-btn" id="postBtn">Publish Post</button>
+        </div>
+      </div>
     </section>
 
     <!-- Existing posts -->
-    <section id="postsContainer" class="discussions-list container">
-      <!-- populated by JavaScript -->
+    <section class="discussion-feed-shell container">
+      <div class="discussion-feed-header">
+        <div>
+          <p class="discussion-section-label">Community feed</p>
+          <h2>Latest discussions</h2>
+        </div>
+        <p class="discussion-helper-text">
+          Use the three-dot menu on your own posts to edit or delete them.
+        </p>
+      </div>
+
+      <section id="postsContainer" class="discussions-list">
+        <!-- populated by JavaScript -->
+      </section>
     </section>
 
-    <script src="../assets/js/discussions.js"></script>
+    <script src="../assets/js/discussion.js"></script>
   </body>
 </html>
