@@ -11,10 +11,9 @@ const editorialsRoutes = require("./routes/editorials");
 const discussionRoutes = require("./routes/discussion");
 const contestsRoutes = require("./routes/contests");
 const profileRoutes = require("./routes/profile");
-
 const app = express();
 
-mongoose.connect(process.env.MONGO_URI_TEST)
+mongoose.connect(process.env.MONGO_URI_PROD)
     .then(() => console.log("Connection successful"))
     .catch((err) => console.error("Connection failed:", err));
 
