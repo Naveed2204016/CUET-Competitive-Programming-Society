@@ -61,7 +61,12 @@ body {
 .hero {
   text-align: center;
   padding: 120px 20px;
-  background: linear-gradient(135deg, #1a1a2e, #0f0f1a);
+  background-image:
+    linear-gradient(rgba(15, 15, 26, 0.55), rgba(15, 15, 26, 0.7)),
+    url("../images/Banner.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .hero h1 {
