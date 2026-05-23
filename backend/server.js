@@ -11,15 +11,25 @@ const editorialsRoutes = require("./routes/editorials");
 const discussionRoutes = require("./routes/discussion");
 const contestsRoutes = require("./routes/contests");
 const profileRoutes = require("./routes/profile");
-
 const app = express();
 
-mongoose.connect(process.env.MONGO_URI_TEST)
+mongoose.connect(process.env.MONGO_URI_PROD)
     .then(() => console.log("Connection successful"))
     .catch((err) => console.error("Connection failed:", err));
 
 app.use(cors());
 app.use(express.json());
+app.use((req, res, next) => {
+    const start = process.hrtime.bigint();
+
+    res.on("finish", () => {
+        const durationMs = Number(process.hrtime.bigint() - start) / 1e6;
+        console.log(`${req.method} ${req.originalUrl} - ${durationMs.toFixed(2)} ms`);
+    });
+
+    next();
+});
+
 app.use("/api/auth", authRoutes);
 app.use("/api/announcements", announcementRoutes);
 app.use("/api/resources", resourcesRoutes);
